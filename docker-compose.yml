@@ -1,0 +1,128 @@
+version: "3"
+
+networks:
+  default:
+    name: cicdlab
+           
+#  proxy:
+#    image: nginx
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+#    ports:
+#      - 80:80
+
+#volumes:
+#  jenkins-data:
+#  postgres-data:
+#  pgadmin-data:
+#  gitea-data:
+  
+services:
+
+  ciserver:
+    container_name: cicdlab-ciserver
+    hostname: ciserver
+    build: 
+      context: .
+      dockerfile: jenkins.dockerfile
+    ports:
+      - 8080:8080
+      - 50000:50000
+    volumes:
+#      - jenkins-certs:/certs/client
+#      - jenkins-data:/var/jenkins_home
+      - ./data/jenkins:/var/jenkins_home
+      - //var/run/docker.sock:/var/run/docker.sock
+
+  dbserver:
+    container_name: cicdlab-dbserver
+    hostname: dbserver
+    image: postgres
+    environment:
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
+    volumes:
+#      - postgres-data:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./setup/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "psql", "-U", "postgres", "postgresql://postgres:password@cicdlab-dbserver:5432/postgres", "-c", "select * from information_schema.schemata"]
+      retries: 10
+      start_period: 10s
+  
+  dbadmin:
+    depends_on:
+      dbserver:
+        condition: service_healthy
+    container_name: cicdlab-dbadmin
+    hostname: dbadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@cicdlabs.org
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_CONFIG_ENABlE_PSQL: 'True'
+      PGADMIN_CONFIG_MAX_LOGIN_ATTEMPTS: 1000
+      PGADMIN_CONFIG_CONFIG_DATABASE_URI: '''postgresql://postgres:password@cicdlab-dbserver:5432/postgres?options=-csearch_path=pgadmin'''
+    ports:
+      - 5050:80
+    volumes:
+      - ./setup:/setup
+#      - pgadmin-data:/var/lib/pgadmin
+      - ./data/pgadmin:/var/lib/pgadmin
+      - ./data/pgadmin/sessions:/var/lib/pgadmin/sessions
+      - ./data/pgadmin/storage:/var/lib/pgadmin/storage
+      - ./data/pgadmin/azurecredentialcache:/var/lib/pgadmin/azurecredentialcache
+      
+  scmserver:
+    depends_on:
+      dbserver:
+        condition: service_healthy
+    container_name: cicdlab-scmserver
+    hostname: scmserver
+    image: gitea/gitea:latest
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=dbserver:5432
+      - GITEA__database__NAME=public
+      - GITEA__database__SCHEMA=gitea
+      - GITEA__database__USER=postgres
+      - GITEA__database__PASSWD=password
+    volumes:
+      - ./setup:/setup
+#      - ./gitea-data:/data
+      - ./data/gitea-data:/data
+      - ./setup/gitea-app.ini:/data/gitea/conf/app.ini
+    ports:
+      - 3000:3000
+      - 222:22
+      
+  artifactsrepo:
+    container_name: cicdlab-artifactsrepo
+    hostname: artifactsrepo
+    image: docker.bintray.io/jfrog/artifactory-oss:latest
+    volumes:
+      - ./setup:/setup
+#      - artifactory-data:/var/opt/jfrog/artifactory/data
+#      - artifactory-logs:/var/opt/jfrog/artifactory/logs
+#      - artifactory-etc:/var/opt/jfrog/artifactory/etc
+    ports:
+      - 8081:8081
+      - 8082:8082
+
+  monitoringserver:
+    container_name: cicdlab-monitoringserver
+    hostname: monitoringserver
+    image: prom/prometheus
+    volumes:
+      - ./setup:/setup
+#      - prometheus.yml:/etc/prometheus/prom/prometheus.yml
+#      - prometheus-data:/etc/prometheus/data
+    ports:
+      - 9090:9090
+      
+    
