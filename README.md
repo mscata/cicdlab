@@ -19,13 +19,17 @@ You will need [Docker](https://www.docker.io/) in order to run the lab, and at l
 
 Just run `docker compose up -d`. If you haven't changed the services' ports in `docker-compose.yml`, then the services will be running as follows:
 
-|Service         |Browser URL                 |Admin User                  |Password             |
-|----------------|----------------------------|----------------------------|---------------------|
-|SCM Server      |http://localhost:3000/      |cicdadmin                   |password             |
-|Database        |none                        |postgres                    |password             |
-|DB Admin        |http://localhost:5050/      |admin@cicdlabs.org          |password             |
-|CI              |http://localhost:8080/      |                            |                     |
-|
+|Service             |Browser URL              |Admin User             |Password    |
+|--------------------|-------------------------|-----------------------|------------|
+|SCM Server          |http://localhost:3000/   |cicdadmin              |password    |
+|Database            |none                     |postgres               |password    |
+|DB Admin            |http://localhost:5050/   |admin@cicdlabs.org     |password    |
+|CI                  |http://localhost:8080/   |admin                  |            |
+|Artifacts Repo      |http://localhost:8082/   |admin                  |password    |
+|Container Registry  |http://localhost:8084/   |admin                  |password    |
+
+Note that the CI server will take a long time to start up the very first time you run the lab. This is because there is a lot to do to generate
+the image, install updates, install the Docker CLI, install a whole bunch of plugins, 
 
 ## Details for Lab users
 
