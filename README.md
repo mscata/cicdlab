@@ -13,23 +13,38 @@ The lab allows a group of participants to initiate one or more projects and esta
 
 ## Pre-requisites
 
-You will need [Docker](https://www.docker.io/) in order to run the lab, and at least 8GB of RAM (recommended 16GB).
+You will need [Docker](https://www.docker.io/) in order to run the lab, and at least 8GB FREE of RAM.
+If you want to deploy to Kubernetes, then you will also need [Minikube](https://minikube.sigs.k8s.io/docs/).
 
 ## Starting the Lab
 
 Just run `docker compose up -d`. If you haven't changed the services' ports in `docker-compose.yml`, then the services will be running as follows:
 
-|Service             |Browser URL              |Admin User             |Password    |
-|--------------------|-------------------------|-----------------------|------------|
-|SCM Server          |http://localhost:3000/   |cicdadmin              |password    |
-|Database            |none                     |postgres               |password    |
+|Service             |Browser URL              |Admin User             |Password    |Startup time (approx)|
+|--------------------|-------------------------|-----------------------|------------|---------------------|
+|SCM Server          |http://localhost:3000/   |cicdadmin              |password    |2 minutes            |
+|Database            |none                     |postgres               |password    |2 minutes            |
 |DB Admin            |http://localhost:5050/   |admin@cicdlabs.org     |password    |
-|CI                  |http://localhost:8080/   |admin                  |            |
-|Artifacts Repo      |http://localhost:8082/   |admin                  |password    |
-|Container Registry  |http://localhost:8084/   |admin                  |password    |
+|CI Server           |http://localhost:8080/   |admin                  |            |
+|Artifacts Repo      |http://localhost:8081/   |admin                  |password    |
 
-Note that the CI server will take a long time to start up the very first time you run the lab. This is because there is a lot to do to generate
-the image, install updates, install the Docker CLI, install a whole bunch of plugins, 
+
+It will take a good 5-10 minutes to start all services from scratch for the first time, so be patient. After all the services are running, you
+will have to run the file `setup.sh` only once. This will run some lab-specific setup to a bunch of services.
+
+Note that the CI server in particular will take a long time to start up the very first time you run the lab. This is because there is a lot to do to generate
+the image, install updates, install the Docker CLI, install a whole bunch of plugins, and a lot more stuff.
+
+First-time setup times for all services is approximately as follows:
+
+|Service             |Startup time (approx)|
+|--------------------|---------------------|
+|SCM Server          |2 minutes            |
+|Database            |2 minutes            |
+|DB Admin            |2 minutes            |
+|CI Server           |10 minutes           |
+|Artifacts Repo      |10 minutes           |
+
 
 ## Details for Lab users
 
