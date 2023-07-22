@@ -1,0 +1,35 @@
+{
+    "name": "pypi.org-proxy",
+    "online": true,
+    "storage": {
+        "blobStoreName": "default",
+        "strictContentTypeValidation": true
+    },
+    "proxy": {
+        "remoteUrl": "https://pypi.org/",
+        "contentMaxAge": 1440,
+        "metadataMaxAge": 1440
+    },
+    "negativeCache": {
+        "enabled": false,
+        "timeToLive": 1440
+    },
+    "httpClient": {
+        "blocked": false,
+        "autoBlock": true,
+        "connection": {
+            "retries": 0,
+            "timeout": 60,
+            "enableCircularRedirects": false,
+            "enableCookies": false,
+            "useTrustStore": false
+        }
+    },
+    "docker": {
+        "v1Enabled": false,
+        "forceBasicAuth": true
+    },
+    "dockerProxy": {
+        "indexType": "HUB"
+    }
+}

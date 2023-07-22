@@ -1,0 +1,17 @@
+{
+    "name": "pypi-group",
+    "online": true,
+    "storage": {
+        "blobStoreName": "default",
+        "strictContentTypeValidation": true
+    },
+    "group": {
+        "memberNames": [
+            "pypi-hosted", "pypi.org-proxy"
+        ]
+    },
+    "docker": {
+        "v1Enabled": false,
+        "forceBasicAuth": true
+    }
+}

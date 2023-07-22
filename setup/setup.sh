@@ -19,4 +19,7 @@ docker exec --user 1000 -i cicdlab-scmserver gitea admin user create --password 
 docker exec --user 1000 -i cicdlab-scmserver gitea admin user create --password password --must-change-password=false --username cicdservice --email cicdservice@cicdlabs.org --admin
 docker exec --user 1000 -i cicdlab-scmserver gitea admin user create --password password --must-change-password=false --username developer --email developer@cicdlabs.org
 
+echo "Setting up Nexus repositories"
+docker exec -i cicdlab-artifactsrepo ${FILE_PATH_PREFIX}/bin/sh ${FILE_PATH_PREFIX}/setup/nexus-setup.sh  
+  
 exec "$@"

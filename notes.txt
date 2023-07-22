@@ -1,0 +1,29 @@
+LINKS
+=======
+
+https://codingbee.net/tutorials/kubernetes/using-docker-with-minikube
+
+https://docs.docker.com/compose/compose-file/
+
+https://docs.docker.com/build/building/multi-stage/
+
+https://hub.docker.com/_/postgres
+
+https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
+
+https://docs.gitea.io/en-us/install-with-docker/
+
+https://www.jenkins.io/doc/book/installing/docker/
+
+https://www.digitalocean.com/community/tutorials/how-to-automate-jenkins-setup-with-docker-and-jenkins-configuration-as-code
+
+https://foreops.com/blog/trivy-intro/
+
+https://aquasecurity.github.io/trivy/v0.17.2/scanning/advanced/embed-in-dockerfile/
+
+https://www.jfrog.com/confluence/display/JFROG/Installing+Artifactory#InstallingArtifactory-DockerComposeInstallation
+
+Nexus API http://localhost:8081/service/extdirect POST
+
+    ### NOTE: Docker volumes are recommended instead of local volumes
+    ### when running JFrog on Windows, otherwise the startup is unreliable.
