@@ -29,8 +29,9 @@ Just run `docker compose up -d`. If you haven't changed the services' ports in `
 |Artifacts Repo      |http://localhost:8081/   |admin                  |password    |
 
 
-It will take a good 5-10 minutes to start all services from scratch for the first time, so be patient. After all the services are running, you
-will have to run the file `setup.sh` only once. This will run some lab-specific setup to a bunch of services.
+It will take about 5 minutes to build the new Jenkins image, and 15-20 minutes to start all services from scratch for the first time, so be patient. 
+After all the services are running, you will have to run the file `setup.sh` only once. This will run some lab-specific setup for a bunch of services. 
+After the initial setup, services will start a lot more quickly in future sessions.
 
 Note that the CI server in particular will take a long time to start up the very first time you run the lab. This is because there is a lot to do to generate
 the image, install updates, install the Docker CLI, install a whole bunch of plugins, and a lot more stuff.

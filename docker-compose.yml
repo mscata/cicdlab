@@ -29,7 +29,7 @@ services:
       context: .
       dockerfile: jenkins.dockerfile
     environment:
-      XXCASC_JENKINS_CONFIG: /var/jenkins_home/config.yaml
+      xxxCASC_JENKINS_CONFIG: /setup/jenkins/jenkins-config.yml
       JENKINS_JAVA_OPTS: -Djenkins.install.runSetupWizard=false -Dhudson.footerURL="Part of CI/CD Lab by Marco Scata"
     ports:
       - 8080:8080
@@ -37,6 +37,7 @@ services:
     volumes:
 #      - jenkins-certs:/certs/client
 #      - jenkins-data:/var/jenkins_home
+      - ./setup:/setup
       - ./data/ciserver:/var/jenkins_home
       - //var/run/docker.sock:/var/run/docker.sock
 
@@ -53,11 +54,15 @@ services:
     volumes:
 #      - postgres-data:/var/lib/postgresql/data
       - ./data/dbserver:/var/lib/postgresql/data
-      - ./setup/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./setup/postgres/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "psql", "-U", "postgres", "postgresql://postgres:password@cicdlab-dbserver:5432/postgres", "-c", "select * from information_schema.schemata"]
       retries: 10
       start_period: 2m
+    deploy:
+      resources:
+        limits:
+          memory: 256m
   
   dbadmin:
     depends_on:
@@ -81,6 +86,10 @@ services:
       - ./data/dbadmin/sessions:/var/lib/pgadmin/sessions
       - ./data/dbadmin/storage:/var/lib/pgadmin/storage
       - ./data/dbadmin/azurecredentialcache:/var/lib/pgadmin/azurecredentialcache
+    deploy:
+      resources:
+        limits:
+          memory: 128m
       
   scmserver:
     depends_on:
@@ -102,7 +111,7 @@ services:
       - ./setup:/setup
 #      - ./gitea-data:/data
       - ./data/scmserver:/data
-      - ./setup/gitea-app.ini:/data/gitea/conf/app.ini
+      - ./setup/gitea/gitea-app.ini:/data/gitea/conf/app.ini
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       retries: 10
@@ -110,9 +119,11 @@ services:
     ports:
       - 3000:3000
       - 222:22
+    deploy:
+      resources:
+        limits:
+          memory: 256m
       
-# docker run --name artifactory -v ./data/artifactory/var/:/var/opt/jfrog/artifactory -d -p 8081:8081 -p 8082:8082 releases-docker.jfrog.io/jfrog/artifactory-oss:latest
-
   artifactsrepo:
     container_name: cicdlab-artifactsrepo
     hostname: artifactsrepo
@@ -132,7 +143,7 @@ services:
       - -c
       - |
         mkdir -p /nexus-data/etc
-        cp /setup/nexus.properties /nexus-data/etc
+        cp /setup/nexus/nexus.properties /nexus-data/etc
         /opt/sonatype/nexus/bin/nexus run
     ports:
       - 8081:8081

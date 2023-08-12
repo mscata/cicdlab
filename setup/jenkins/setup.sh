@@ -1,0 +1,1 @@
+cp -R /setup/jenkins/users /var/jenkins_home
