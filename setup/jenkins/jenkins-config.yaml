@@ -5,13 +5,14 @@ credentials:
       - usernamePassword:
           description: "Used to login to Gitea source control"
           id: "GITEA_CREDENTIALS"
-          password: "{AQAAABAAAAAQhkC205E4lxlF7bMmD12bfKdoUuIqXCHB/IE78zmgiJs=}"
+          password: "{AQAAABAAAAAQXyI4s8P3B5+2AaE6XoFrs4LmKHx3oy9JIrjxFyDXwps=}"
           scope: GLOBAL
           username: "cicdservice"
 jenkins:
   agentProtocols:
   - "JNLP4-connect"
   - "Ping"
+  authorizationStrategy: "loggedInUsersCanDoAnything"
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
@@ -24,6 +25,7 @@ jenkins:
   markupFormatter: "plainText"
   mode: NORMAL
   myViewsTabBar: "standard"
+  noUsageStatistics: true
   numExecutors: 2
   primaryView:
     all:
@@ -32,7 +34,7 @@ jenkins:
   quietPeriod: 5
   remotingSecurity:
     enabled: true
-  scmCheckoutRetryCount: 0
+  scmCheckoutRetryCount: 3
   securityRealm:
     local:
       allowsSignup: false
@@ -91,17 +93,6 @@ security:
     approvedScriptHashes:
     - "SHA512:3f205299bef2fe3329258a42f2c60d332cc35ccb41a3ca0512d7869c6aff4561ff708c48123b4f7c3dec33ccca30d54fb8b9b51b5bc7070f96236d11a3f0bdcb"
 unclassified:
-  artifactoryBuilder:
-    jfrogPipelinesServer:
-      bypassProxy: false
-      connectionRetries: 3
-      credentialsConfig:
-        ignoreCredentialPluginDisabled: true
-        overridingCredentials: false
-        password: "{AQAAABAAAAAQzxIsDznsuGbtWbbN71YDI5EPCjbRF8eeZKYA3rgFOTY=}"
-        username: "****"
-      timeout: 300
-    useCredentialsPlugin: false
   bitbucketEndpointConfiguration:
     endpoints:
     - bitbucketCloudEndpoint:
@@ -112,25 +103,12 @@ unclassified:
   buildDiscarders:
     configuredBuildDiscarders:
     - "jobBuildDiscarder"
+    - simpleBuildDiscarder:
+        discarder:
+          logRotator:
+            numToKeepStr: "10"
   buildStepOperation:
     enabled: false
-  email-ext:
-    adminRequiredForTemplateTesting: false
-    allowUnregisteredEnabled: false
-    charset: "UTF-8"
-    debugMode: false
-    defaultBody: |-
-      $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
-
-      Check console output at $BUILD_URL to view the results.
-    defaultContentType: "text/plain"
-    defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
-    defaultTriggerIds:
-    - "hudson.plugins.emailext.plugins.trigger.FailureTrigger"
-    maxAttachmentSize: -1
-    maxAttachmentSizeMb: -1
-    precedenceBulk: false
-    watchingEnabled: false
   enrichedSummaryConfig:
     enrichedSummaryEnabled: false
     httpClientDelayBetweenRetriesInSeconds: 1
@@ -145,7 +123,7 @@ unclassified:
     hookUrl: "http://localhost:8080/github-webhook/"
   giteaServers:
     servers:
-    - credentialsId: "GITEA_ADMIN"
+    - credentialsId: "GITEA_CREDENTIALS"
       displayName: "cicdlab-scmserver"
       manageHooks: true
       serverUrl: "http://cicdlab-scmserver:3000"
@@ -185,6 +163,8 @@ unclassified:
     hideCredentials: false
     showEntireCommitSummaryInChanges: false
     useExistingAccountWithSameEmail: false
+  shell:
+    shell: "/bin/bash"
   timestamper:
     allPipelines: false
     elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
@@ -192,10 +172,27 @@ unclassified:
   warningsParsers:
     consoleLogScanningPermitted: false
 tool:
+  dockerTool:
+    installations:
+    - home: "/usr"
+      name: "Docker 24.0.5"
   git:
     installations:
-    - home: "git"
+    - home: "/usr/bin/git"
       name: "Default"
+  jdk:
+    installations:
+    - home: "/opt/java/openjdk"
+      name: "Open JDK 11"
+  liquibaseInstallation:
+    installations:
+    - databaseDriverUrl: "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.6.0/postgresql-42.6.0.jar"
+      home: "/opt/liquibase-4.23.2"
+      name: "Liquibase 4.23.2"
+  maven:
+    installations:
+    - home: "/opt/apache-maven-3.9.4"
+      name: "apache-maven-3.9.4"
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"

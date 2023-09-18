@@ -14,6 +14,7 @@ The lab allows a group of participants to initiate one or more projects and esta
 ## Pre-requisites
 
 You will need [Docker](https://www.docker.io/) in order to run the lab, and at least 8GB FREE of RAM.
+The lab has been running happily on a laptop with a quad-core AMD Ryzen 5 and 16GB of RAM.
 If you want to deploy to Kubernetes, then you will also need [Minikube](https://minikube.sigs.k8s.io/docs/).
 
 ## Starting the Lab
@@ -36,16 +37,14 @@ After the initial setup, services will start a lot more quickly in future sessio
 Note that the CI server in particular will take a long time to start up the very first time you run the lab. This is because there is a lot to do to generate
 the image, install updates, install the Docker CLI, install a whole bunch of plugins, and a lot more stuff.
 
-First-time setup times for all services is approximately as follows:
+First-time setup times for all services is approximately 10-15 minutes.
 
-|Service             |Startup time (approx)|
-|--------------------|---------------------|
-|SCM Server          |2 minutes            |
-|Database            |2 minutes            |
-|DB Admin            |2 minutes            |
-|CI Server           |10 minutes           |
-|Artifacts Repo      |10 minutes           |
+The CI server will use the following credentials to connect to other services. Please note that you will probably have to update the passwords
+**exactly as shown here** from the admin screens, otherwise it won't be able to connect to anywhere:
 
+|Service             |Credentials ID       |Username             |Password  |
+|--------------------|---------------------|---------------------|----------|
+|SCM Server          |GITEA_CREDENTIALS    |cicdservice          |password  |
 
 ## Details for Lab users
 

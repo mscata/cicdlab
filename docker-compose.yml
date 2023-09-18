@@ -5,8 +5,7 @@ networks:
     name: cicdlab
     
 volumes:
-  artifacts-data: {}
-  conainerregistry-data: {}
+  jenkins-data: {}
            
 #  proxy:
 #    image: nginx
@@ -29,17 +28,32 @@ services:
       context: .
       dockerfile: jenkins.dockerfile
     environment:
-      xxxCASC_JENKINS_CONFIG: /setup/jenkins/jenkins-config.yml
-      JENKINS_JAVA_OPTS: -Djenkins.install.runSetupWizard=false -Dhudson.footerURL="Part of CI/CD Lab by Marco Scata"
+      CASC_JENKINS_CONFIG: /setup/jenkins/jenkins-config.yaml
+      JENKINS_JAVA_OPTS: -Djenkins.install.runSetupWizard=false
     ports:
       - 8080:8080
       - 50000:50000
     volumes:
 #      - jenkins-certs:/certs/client
-#      - jenkins-data:/var/jenkins_home
+      - jenkins-data:/var/jenkins_home
       - ./setup:/setup
-      - ./data/ciserver:/var/jenkins_home
+#      - ./data/ciserver:/var/jenkins_home
       - //var/run/docker.sock:/var/run/docker.sock
+    command: 
+      - /bin/bash
+      - -c
+      - |
+        echo "Setting up predefined users..."
+        cp -rf /setup/jenkins/users /var/jenkins_home
+        echo "Downloading/updating plugins..."
+        jenkins-plugin-cli --plugin-file /setup/jenkins/jenkins-plugins.txt --verbose --skip-failed-plugins
+        echo "Starting Jenkins..."
+        /usr/local/bin/jenkins.sh
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 2gb
 
   dbserver:
     container_name: cicdlab-dbserver
@@ -89,7 +103,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 128m
+          memory: 256m
       
   scmserver:
     depends_on:
@@ -142,11 +156,17 @@ services:
       - /bin/sh
       - -c
       - |
+        echo "Restoring Nexus configuration..."
         mkdir -p /nexus-data/etc
         cp /setup/nexus/nexus.properties /nexus-data/etc
+        echo "Starting Nexus..."
         /opt/sonatype/nexus/bin/nexus run
     ports:
       - 8081:8081
+    deploy:
+      resources:
+        limits:
+          memory: 4gb
     
   monitoringserver:
     container_name: cicdlab-monitoringserver
