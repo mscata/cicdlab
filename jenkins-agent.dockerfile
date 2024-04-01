@@ -1,0 +1,57 @@
+ARG JENKINS_IMG=jenkins/agent:jdk17
+
+FROM $JENKINS_IMG
+
+ARG MAVEN_VERSION=3.9.4
+ARG LIQUIBASE_VERSION=4.26.0
+ARG GRADLE_VERSION=8.3
+ARG DEPENDENCYCHECK_VERSION=8.4.0
+
+USER root
+
+RUN apt-get update \
+  && apt-get install -y lsb-release apt-utils sudo zip unzip python3 \
+  && curl -fsSL https://get.docker.com | sh
+
+RUN echo "Downloading Maven $MAVEN_VERSION" \
+  && curl -LO https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
+  && echo "Unpacking..." \
+  && tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz \
+  && echo "Installing..." \
+  && mv apache-maven-$MAVEN_VERSION /opt/ \
+  && echo "Cleaning up..." \
+  && rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz 
+
+RUN echo "Downloading Liquibase $LIQUIBASE_VERSION" \
+  && curl -LO https://github.com/liquibase/liquibase/releases/download/v$LIQUIBASE_VERSION/liquibase-$LIQUIBASE_VERSION.tar.gz \
+  && mkdir liquibase-$LIQUIBASE_VERSION \
+  && echo "Unpacking..." \
+  && tar -xf liquibase-$LIQUIBASE_VERSION.tar.gz -C ./liquibase-$LIQUIBASE_VERSION \
+  && echo "Installing..." \
+  && mv liquibase-$LIQUIBASE_VERSION /opt/ \
+  && echo "Cleaning up..." \
+  && rm -f liquibase-$LIQUIBASE_VERSION.tar.gz 
+
+RUN echo "Downloading Gradle $GRADLE_VERSION" \
+  && curl -LO https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip \
+  && echo "Unpacking..." \
+  && unzip -q gradle-$GRADLE_VERSION-bin.zip \
+  && echo "Installing..." \
+  && mv gradle-$GRADLE_VERSION /opt/ \
+  && echo "Cleaning up..." \
+  && rm -f gradle-$GRADLE_VERSION-bin.zip 
+  
+RUN echo "Downloading Dependency Check $DEPENDENCYCHECK_VERSION" \
+  && curl -LO https://github.com/jeremylong/DependencyCheck/releases/download/v$DEPENDENCYCHECK_VERSION/dependency-check-$DEPENDENCYCHECK_VERSION-release.zip \
+  && echo "Unpacking..." \
+  && unzip -q dependency-check-$DEPENDENCYCHECK_VERSION-release.zip \
+  && echo "Installing..." \
+  && mv dependency-check /opt/ \
+  && echo "Cleaning up..." \
+  && rm -f dependency-check-$DEPENDENCYCHECK_VERSION-release.zip
+
+RUN usermod -aG docker jenkins
+
+USER jenkins
+
+COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
