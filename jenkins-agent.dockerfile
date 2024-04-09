@@ -10,7 +10,7 @@ ARG DEPENDENCYCHECK_VERSION=8.4.0
 USER root
 
 RUN apt-get update \
-  && apt-get install -y lsb-release apt-utils sudo zip unzip python3 \
+  && apt-get install -y lsb-release apt-utils sudo zip unzip python3 python3-pip \
   && curl -fsSL https://get.docker.com | sh
 
 RUN echo "Downloading Maven $MAVEN_VERSION" \
