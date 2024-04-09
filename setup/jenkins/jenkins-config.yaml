@@ -5,7 +5,7 @@ credentials:
       - usernamePassword:
           description: "Used to login to Gitea source control"
           id: "GITEA_CREDENTIALS"
-          password: "{AQAAABAAAAAQXyI4s8P3B5+2AaE6XoFrs4LmKHx3oy9JIrjxFyDXwps=}"
+          password: "{AQAAABAAAABApfJ0inga7dEZ9wrAt2k8PsNRtCSGEzZ1xu8Lmfxl5AuIlUstHKV1joDH/2wDOvFVwgI6Jsb1j0lyavzmXQoR75twljl8/mf5er3btiAbAic=}"
           scope: GLOBAL
           username: "cicdservice"
 jenkins:
@@ -21,12 +21,34 @@ jenkins:
   - "jenkins.diagnostics.ControllerExecutorsNoAgents"
   - "hudson.util.DoubleLaunchChecker"
   labelAtoms:
+  - name: "builder"
   - name: "built-in"
   markupFormatter: "plainText"
   mode: NORMAL
   myViewsTabBar: "standard"
   noUsageStatistics: true
-  numExecutors: 2
+  nodeMonitors:
+  - "architecture"
+  - "clock"
+  - diskSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - "swapSpace"
+  - tmpSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - "responseTime"
+  nodes:
+  - permanent:
+      launcher:
+        command:
+          command: "docker run -i --rm --name builder --network cicdlab -v //var/run/docker.sock://var/run/docker.sock\
+            \ --init mscata/cicdlabs-ciagent java -jar /usr/share/jenkins/agent.jar"
+      name: "builder"
+      numExecutors: 10
+      remoteFS: "/home/jenkins/agent"
+      retentionStrategy: "always"
+  numExecutors: 0
   primaryView:
     all:
       name: "all"
@@ -43,6 +65,7 @@ jenkins:
       - id: "admin"
         name: "admin"
         properties:
+        - "consoleUrlProvider"
         - "apiToken"
         - "favorite"
         - "myView"
@@ -55,6 +78,7 @@ jenkins:
       - id: "developer"
         name: "developer"
         properties:
+        - "consoleUrlProvider"
         - "apiToken"
         - "favorite"
         - "myView"
@@ -91,7 +115,8 @@ security:
     port: -1
   scriptApproval:
     approvedScriptHashes:
-    - "SHA512:3f205299bef2fe3329258a42f2c60d332cc35ccb41a3ca0512d7869c6aff4561ff708c48123b4f7c3dec33ccca30d54fb8b9b51b5bc7070f96236d11a3f0bdcb"
+    - "SHA512:36995a5e4c8aab21d971dd0474a576c87f3ed3a7e3d909f735d8b4e16b471dfd1078c5ebc8da369494670e28a6a4e18f8d670d37eaf8ba123d5aba002f74faf6"
+    - "SHA512:998117ab61c421d7afba3bb25bf7157a39127edc0fb05dd6b9d9f0911724dffae8d9d92efdfa47d6624f049fe4b81c4a7813aa96865c76fbaee872f4081f6821"
 unclassified:
   bitbucketEndpointConfiguration:
     endpoints:
@@ -151,8 +176,6 @@ unclassified:
     localRepository: "default"
   pollSCM:
     pollingThreadCount: 10
-  prismConfiguration:
-    theme: PRISM
   scmGit:
     addGitTagAction: false
     allowSecondFetch: false
@@ -165,30 +188,35 @@ unclassified:
     useExistingAccountWithSameEmail: false
   shell:
     shell: "/bin/bash"
+  subversionSCM:
+    workspaceFormat: 8
   timestamper:
-    allPipelines: false
+    allPipelines: true
     elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
     systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
   warningsParsers:
     consoleLogScanningPermitted: false
 tool:
+  dependency-check:
+    installations:
+    - home: "/opt/dependency-check"
+      name: "Dependency Check 8.4.0"
   dockerTool:
     installations:
     - home: "/usr"
-      name: "Docker 24.0.5"
+      name: "Docker"
   git:
     installations:
     - home: "/usr/bin/git"
       name: "Default"
+  gradle:
+    installations:
+    - home: "/opt/gradle-8.3"
+      name: "Gradle 8.3"
   jdk:
     installations:
     - home: "/opt/java/openjdk"
-      name: "Open JDK 11"
-  liquibaseInstallation:
-    installations:
-    - databaseDriverUrl: "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.6.0/postgresql-42.6.0.jar"
-      home: "/opt/liquibase-4.23.2"
-      name: "Liquibase 4.23.2"
+      name: "Open JDK 17"
   maven:
     installations:
     - home: "/opt/apache-maven-3.9.4"
