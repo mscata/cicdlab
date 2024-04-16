@@ -24,12 +24,15 @@ junit:latest
 ldap:latest
 matrix-auth:latest
 maven-plugin:latest
+nodejs:latest
 nexus-artifact-uploader:latest
 pam-auth:latest
 pipeline-github-lib:latest
+pipeline-npm:latest
 pipeline-stage-view:latest
 rebuild:latest
 redmine:latest
+sshd:latest
 ssh-slaves:latest
 timestamper:latest
 warnings-ng:latest

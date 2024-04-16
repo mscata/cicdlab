@@ -42,10 +42,11 @@ jenkins:
   - permanent:
       launcher:
         command:
-          command: "docker run -i --rm --name builder --network cicdlab -v //var/run/docker.sock://var/run/docker.sock\
-            \ --init mscata/cicdlabs-ciagent java -jar /usr/share/jenkins/agent.jar"
+          command: "docker run -i --rm --name cicdlab-builder --network cicdlab -v\
+            \ //var/run/docker.sock://var/run/docker.sock --init mscata/cicdlabs-ciagent\
+            \ java -jar /usr/share/jenkins/agent.jar"
       name: "builder"
-      numExecutors: 10
+      numExecutors: 5
       remoteFS: "/home/jenkins/agent"
       retentionStrategy: "always"
   numExecutors: 0
@@ -115,8 +116,7 @@ security:
     port: -1
   scriptApproval:
     approvedScriptHashes:
-    - "SHA512:36995a5e4c8aab21d971dd0474a576c87f3ed3a7e3d909f735d8b4e16b471dfd1078c5ebc8da369494670e28a6a4e18f8d670d37eaf8ba123d5aba002f74faf6"
-    - "SHA512:998117ab61c421d7afba3bb25bf7157a39127edc0fb05dd6b9d9f0911724dffae8d9d92efdfa47d6624f049fe4b81c4a7813aa96865c76fbaee872f4081f6821"
+    - "SHA512:8dad6677a5a1a707746b1a0d3fd2cf65404b3043774bbff80c20d4ad95ae18be5cb42b18274c41de57dad7ce38ef1d35c7981a16d6ed284a07ff3d9ced7b6cb1"
 unclassified:
   bitbucketEndpointConfiguration:
     endpoints:
@@ -167,7 +167,7 @@ unclassified:
     storage: "file"
   location:
     adminAddress: "address not configured yet <nobody@nowhere>"
-    url: "http://localhost:8080/"
+    url: "http://localhost:8080/jenkins/"
   mailer:
     charset: "UTF-8"
     useSsl: false
@@ -199,8 +199,8 @@ unclassified:
 tool:
   dependency-check:
     installations:
-    - home: "/opt/dependency-check"
-      name: "Dependency Check 8.4.0"
+    - home: "/home/jenkins/tools/dependency-check"
+      name: "Dependency Check"
   dockerTool:
     installations:
     - home: "/usr"
@@ -208,19 +208,23 @@ tool:
   git:
     installations:
     - home: "/usr/bin/git"
-      name: "Default"
+      name: "Git"
   gradle:
     installations:
-    - home: "/opt/gradle-8.3"
-      name: "Gradle 8.3"
+    - home: "/home/jenkins/tools/gradle-8.3"
+      name: "Gradle"
   jdk:
     installations:
-    - home: "/opt/java/openjdk"
+    - home: "/home/jenkins/tools/java/openjdk"
       name: "Open JDK 17"
   maven:
     installations:
-    - home: "/opt/apache-maven-3.9.4"
-      name: "apache-maven-3.9.4"
+    - home: "/home/jenkins/tools/apache-maven-3.9.4"
+      name: "Maven"
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"
+  nodejs:
+    installations:
+    - home: "/home/jenkins/tools/nvm/versions/node/v20.12.1"
+      name: "NodeJS"
