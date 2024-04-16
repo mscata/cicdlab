@@ -6,6 +6,7 @@ networks:
     
 volumes:
   jenkins-data: {}
+  postgres-data: {}
            
 #  proxy:
 #    image: nginx
@@ -15,21 +16,34 @@ volumes:
 #      - 80:80
   
 services:
+  socat:
+    # socat allows to run Docker inside Docker in the simplest way, so we
+    # can use Docker builder nodes in our CI/CD workflow, and we can also
+    # use them to build Docker images
+    container_name: cicdlab-socat
+    hostname: socat
+    image: alpine/socat
+    command: tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
+    user: root
+    volumes:
+      - type: bind
+        source: //var/run/docker.sock
+        target: //var/run/docker.sock
 
   ciserver:
-    depends_on:
-      artifactsrepo:
-        condition: service_healthy
-      scmserver:
-        condition: service_healthy
+#    depends_on:
+#      artifactsrepo:
+#        condition: service_healthy
+#      scmserver:
+#        condition: service_healthy
     container_name: cicdlab-ciserver
     hostname: ciserver
-    build: 
-      context: .
-      dockerfile: jenkins.dockerfile
+    image: mscata/cicdlabs-ciserver
     environment:
+      DOCKER_HOST: socat:2375
       CASC_JENKINS_CONFIG: /setup/jenkins/jenkins-config.yaml
       JENKINS_JAVA_OPTS: -Djenkins.install.runSetupWizard=false
+      JENKINS_OPTS: --prefix=/jenkins
     ports:
       - 8080:8080
       - 50000:50000
@@ -39,26 +53,32 @@ services:
       - ./setup:/setup
 #      - ./data/ciserver:/var/jenkins_home
       - //var/run/docker.sock:/var/run/docker.sock
-    command: 
-      - /bin/bash
-      - -c
-      - |
-        echo "Setting up predefined users..."
-        cp -rf /setup/jenkins/users /var/jenkins_home
-        echo "Downloading/updating plugins..."
-        jenkins-plugin-cli --plugin-file /setup/jenkins/jenkins-plugins.txt --verbose --skip-failed-plugins
-        echo "Starting Jenkins..."
-        /usr/local/bin/jenkins.sh
+### Uncomment the following section to make sure the
+### plugins are always up to date, at the expense of
+### of much longer startup time
+#    command:
+#      - /bin/bash
+#      - -c
+#      - |
+#        echo "Downloading/updating plugins..."
+#        jenkins-plugin-cli --plugin-file /setup/jenkins/jenkins-plugins.txt --verbose --skip-failed-plugins
+#        echo "Starting Jenkins..."
+#        /usr/local/bin/jenkins.sh
     deploy:
       resources:
         limits:
           cpus: '0.75'
           memory: 2gb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/jenkins"]
+      retries: 10
+      interval: 1m
+      start_period: 2m
 
   dbserver:
     container_name: cicdlab-dbserver
     hostname: dbserver
-    image: postgres
+    image: mscata/cicdlabs-dbserver
     environment:
       PGDATA: /var/lib/postgresql/data
       POSTGRES_USER: postgres
@@ -66,9 +86,9 @@ services:
     ports:
       - 5432:5432
     volumes:
-#      - postgres-data:/var/lib/postgresql/data
-      - ./data/dbserver:/var/lib/postgresql/data
-      - ./setup/postgres/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres-data:/var/lib/postgresql/data
+#      - ./data/dbserver:/var/lib/postgresql/data
+#      - ./setup/postgres/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "psql", "-U", "postgres", "postgresql://postgres:password@cicdlab-dbserver:5432/postgres", "-c", "select * from information_schema.schemata"]
       retries: 10
@@ -84,7 +104,7 @@ services:
         condition: service_healthy
     container_name: cicdlab-dbadmin
     hostname: dbadmin
-    image: dpage/pgadmin4
+    image: mscata/cicdlabs-dbadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@cicdlabs.org
       PGADMIN_DEFAULT_PASSWORD: password
@@ -96,10 +116,10 @@ services:
     volumes:
       - ./setup:/setup
 #      - pgadmin-data:/var/lib/pgadmin
-      - ./data/dbadmin:/var/lib/pgadmin
-      - ./data/dbadmin/sessions:/var/lib/pgadmin/sessions
-      - ./data/dbadmin/storage:/var/lib/pgadmin/storage
-      - ./data/dbadmin/azurecredentialcache:/var/lib/pgadmin/azurecredentialcache
+#      - ./data/dbadmin:/var/lib/pgadmin
+#      - ./data/dbadmin/sessions:/var/lib/pgadmin/sessions
+#      - ./data/dbadmin/storage:/var/lib/pgadmin/storage
+#      - ./data/dbadmin/azurecredentialcache:/var/lib/pgadmin/azurecredentialcache
     deploy:
       resources:
         limits:
@@ -111,7 +131,7 @@ services:
         condition: service_healthy
     container_name: cicdlab-scmserver
     hostname: scmserver
-    image: gitea/gitea:latest
+    image: mscata/cicdlabs-scmserver
     environment:
       - USER_UID=1000
       - USER_GID=1000
@@ -167,17 +187,50 @@ services:
       resources:
         limits:
           memory: 4gb
-    
-  monitoringserver:
-    container_name: cicdlab-monitoringserver
-    hostname: monitoringserver
-    image: prom/prometheus
-    volumes:
-      - ./setup:/setup
-#      - prometheus.yml:/etc/prometheus/prom/prometheus.yml
-#      - prometheus-data:/etc/prometheus/data
-      - ./data/monitoringserver:/etc/prometheus/data
+
+  cleancodeserver:
+    depends_on:
+      dbserver:
+        condition: service_healthy
+    container_name: cicdlab-cleancode
+    hostname: cleancode
+    image: sonarqube:lts-community
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://dbserver:5432/postgres?currentSchema=sonar
+      SONAR_JDBC_USERNAME: postgres
+      SONAR_JDBC_PASSWORD: password
     ports:
-      - 9090:9090
-      
-    
+      - "9000:9000"
+
+  projectserver:
+    container_name: cicdlab-projectserver
+    hostname: projectserver
+    image: redmine
+    environment:
+      - RAILS_ENV=production
+      - REDMINE_LANG=en_GB
+#    volumes:
+#      - ./setup/redmine/database.yml:/usr/src/redmine/config/database.yml
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:3001"]
+      retries: 20
+      interval: 1m
+      start_period: 1m
+    ports:
+      - 3001:3001
+    deploy:
+      resources:
+        limits:
+          memory: 2gb
+  
+#  monitoringserver:
+#    container_name: cicdlab-monitoringserver
+#    hostname: monitoringserver
+#    image: prom/prometheus
+#    volumes:
+#      - ./setup:/setup
+##      - prometheus.yml:/etc/prometheus/prom/prometheus.yml
+##      - prometheus-data:/etc/prometheus/data
+#      - ./data/monitoringserver:/etc/prometheus/data
+#    ports:
+#      - 9090:9090
