@@ -6,19 +6,28 @@ ARG MAVEN_VERSION=3.9.4
 ARG LIQUIBASE_VERSION=4.26.0
 ARG GRADLE_VERSION=8.3
 ARG DEPENDENCYCHECK_VERSION=8.4.0
+ARG NODEJS_VERSION=20
+ARG NVM_VERSION=0.39.7
+
+ENV TOOLS_HOME=/home/jenkins/tools
 
 USER root
 
 RUN apt-get update \
   && apt-get install -y lsb-release apt-utils sudo zip unzip python3 python3-pip \
-  && curl -fsSL https://get.docker.com | sh
+  && curl -fsSL https://get.docker.com | sh \
+  && mkdir -p $TOOLS_HOME && chown jenkins:jenkins $TOOLS_HOME
+
+RUN usermod -aG docker jenkins
+
+USER jenkins
 
 RUN echo "Downloading Maven $MAVEN_VERSION" \
   && curl -LO https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
   && echo "Unpacking..." \
   && tar -xf apache-maven-$MAVEN_VERSION-bin.tar.gz \
   && echo "Installing..." \
-  && mv apache-maven-$MAVEN_VERSION /opt/ \
+  && mv apache-maven-$MAVEN_VERSION $TOOLS_HOME/ \
   && echo "Cleaning up..." \
   && rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz 
 
@@ -28,7 +37,7 @@ RUN echo "Downloading Liquibase $LIQUIBASE_VERSION" \
   && echo "Unpacking..." \
   && tar -xf liquibase-$LIQUIBASE_VERSION.tar.gz -C ./liquibase-$LIQUIBASE_VERSION \
   && echo "Installing..." \
-  && mv liquibase-$LIQUIBASE_VERSION /opt/ \
+  && mv liquibase-$LIQUIBASE_VERSION $TOOLS_HOME/ \
   && echo "Cleaning up..." \
   && rm -f liquibase-$LIQUIBASE_VERSION.tar.gz 
 
@@ -37,7 +46,7 @@ RUN echo "Downloading Gradle $GRADLE_VERSION" \
   && echo "Unpacking..." \
   && unzip -q gradle-$GRADLE_VERSION-bin.zip \
   && echo "Installing..." \
-  && mv gradle-$GRADLE_VERSION /opt/ \
+  && mv gradle-$GRADLE_VERSION $TOOLS_HOME/ \
   && echo "Cleaning up..." \
   && rm -f gradle-$GRADLE_VERSION-bin.zip 
   
@@ -46,12 +55,18 @@ RUN echo "Downloading Dependency Check $DEPENDENCYCHECK_VERSION" \
   && echo "Unpacking..." \
   && unzip -q dependency-check-$DEPENDENCYCHECK_VERSION-release.zip \
   && echo "Installing..." \
-  && mv dependency-check /opt/ \
+  && mv dependency-check $TOOLS_HOME/ \
   && echo "Cleaning up..." \
   && rm -f dependency-check-$DEPENDENCYCHECK_VERSION-release.zip
 
-RUN usermod -aG docker jenkins
+RUN echo "Installing NVM $NVM_VERSION" \
+  && mkdir -p $TOOLS_HOME/nvm && export NVM_DIR=$TOOLS_HOME/nvm \
+  && curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v$NVM_VERSION/install.sh" | bash
 
-USER jenkins
+RUN echo "Installing NodeJS $NODEJS_VERSION" \
+  && export NVM_DIR=$TOOLS_HOME/nvm \
+  && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
+  && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" \
+  && nvm install $NODEJS_VERSION
 
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
