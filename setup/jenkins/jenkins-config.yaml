@@ -1,18 +1,70 @@
-credentials:
-  system:
-    domainCredentials:
-    - credentials:
-      - usernamePassword:
-          description: "Used to login to Gitea source control"
-          id: "GITEA_CREDENTIALS"
-          password: "{AQAAABAAAABApfJ0inga7dEZ9wrAt2k8PsNRtCSGEzZ1xu8Lmfxl5AuIlUstHKV1joDH/2wDOvFVwgI6Jsb1j0lyavzmXQoR75twljl8/mf5er3btiAbAic=}"
-          scope: GLOBAL
-          username: "cicdservice"
 jenkins:
   agentProtocols:
   - "JNLP4-connect"
   - "Ping"
-  authorizationStrategy: "loggedInUsersCanDoAnything"
+  authorizationStrategy:
+    globalMatrix:
+      entries:
+      - group:
+          name: "authenticated"
+          permissions:
+          - "Agent/Build"
+          - "Agent/Connect"
+          - "Credentials/Create"
+          - "Credentials/Update"
+          - "Credentials/View"
+          - "Job/Build"
+          - "Job/Cancel"
+          - "Job/Configure"
+          - "Job/Create"
+          - "Job/Discover"
+          - "Job/Read"
+          - "Job/Workspace"
+          - "Run/Update"
+          - "View/Configure"
+          - "View/Create"
+          - "View/Delete"
+          - "View/Read"
+      - user:
+          name: "admin"
+          permissions:
+          - "Agent/Build"
+          - "Agent/Configure"
+          - "Agent/Connect"
+          - "Agent/Create"
+          - "Agent/Delete"
+          - "Agent/Disconnect"
+          - "Agent/Provision"
+          - "Credentials/Create"
+          - "Credentials/Delete"
+          - "Credentials/ManageDomains"
+          - "Credentials/Update"
+          - "Credentials/View"
+          - "Job/Build"
+          - "Job/Cancel"
+          - "Job/Configure"
+          - "Job/Create"
+          - "Job/Delete"
+          - "Job/Discover"
+          - "Job/Move"
+          - "Job/Read"
+          - "Job/Workspace"
+          - "Overall/Administer"
+          - "Overall/Read"
+          - "Run/Delete"
+          - "Run/Replay"
+          - "Run/Update"
+          - "SCM/Tag"
+          - "View/Configure"
+          - "View/Create"
+          - "View/Delete"
+          - "View/Read"
+      - user:
+          name: "anonymous"
+          permissions:
+          - "Job/Read"
+          - "Overall/Read"
+          - "View/Read"
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false

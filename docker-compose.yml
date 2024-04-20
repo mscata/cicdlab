@@ -31,31 +31,31 @@ services:
         target: //var/run/docker.sock
 
   ciserver:
-#    depends_on:
+    depends_on:
+      socat:
+        condition: service_started
 #      artifactsrepo:
 #        condition: service_healthy
-#      scmserver:
-#        condition: service_healthy
+      scmserver:
+        condition: service_healthy
     container_name: cicdlab-ciserver
     hostname: ciserver
     image: mscata/cicdlabs-ciserver
     environment:
       DOCKER_HOST: socat:2375
-      CASC_JENKINS_CONFIG: /setup/jenkins/jenkins-config.yaml
+      CASC_JENKINS_CONFIG: /var/jenkins_home/jenkins-config.yaml
       JENKINS_JAVA_OPTS: -Djenkins.install.runSetupWizard=false
       JENKINS_OPTS: --prefix=/jenkins
     ports:
       - 8080:8080
       - 50000:50000
     volumes:
-#      - jenkins-certs:/certs/client
       - jenkins-data:/var/jenkins_home
       - ./setup:/setup
-#      - ./data/ciserver:/var/jenkins_home
       - //var/run/docker.sock:/var/run/docker.sock
 ### Uncomment the following section to make sure the
-### plugins are always up to date, at the expense of
-### of much longer startup time
+### plugins are always updated automatically, at the
+### expense of a few more minutes of startup time
 #    command:
 #      - /bin/bash
 #      - -c

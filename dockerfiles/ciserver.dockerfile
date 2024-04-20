@@ -2,9 +2,12 @@ ARG JENKINS_IMG=jenkins/jenkins:jdk17
 # dumper build to prepare files
 FROM $JENKINS_IMG as dumper
 
-COPY --chown=jenkins:jenkins setup/jenkins/jenkins-plugins.txt /var/jenkins_home
-COPY --chown=jenkins:jenkins setup/jenkins/users/ /var/jenkins_home/users/
-RUN ["jenkins-plugin-cli", "-f", "/var/jenkins_home/jenkins-plugins.txt", "-d", "/var/jenkins_home/plugins", "--verbose"]
+COPY --chown=jenkins:jenkins ../setup/jenkins /var/jenkins_home
+RUN jenkins-plugin-cli -f /var/jenkins_home/jenkins-plugins.txt -d /var/jenkins_home/plugins --verbose
+RUN for f in $(ls /var/jenkins_home/plugins/*.jpi); do \
+  plugin_name=$(basename "$f" .jpi); \
+  unzip -o "$f" -d /var/jenkins_home/plugins/"$plugin_name"; \
+done
 
 # final build
 FROM $JENKINS_IMG
