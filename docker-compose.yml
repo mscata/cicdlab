@@ -87,10 +87,9 @@ services:
       - 5432:5432
     volumes:
       - postgres-data:/var/lib/postgresql/data
-#      - ./data/dbserver:/var/lib/postgresql/data
-#      - ./setup/postgres/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "psql", "-U", "postgres", "postgresql://postgres:password@cicdlab-dbserver:5432/postgres", "-c", "select * from information_schema.schemata"]
+      test: ["CMD", "psql", "-U", "postgres", "postgresql://postgres:password@cicdlab-dbserver:5432/postgres",
+             "-c", "select * from information_schema.schemata"]
       retries: 10
       start_period: 2m
     deploy:
