@@ -20,8 +20,5 @@ RUN apt-get update \
 
 RUN usermod -aG docker jenkins
 
-COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/bin/trivy
-COPY --from=zricethezav/gitleaks:latest /usr/bin/gitleaks /usr/bin/gitleaks
-
 USER jenkins
 COPY --from=dumper --chown=jenkins:jenkins /var/jenkins_home/ /var/jenkins_home/

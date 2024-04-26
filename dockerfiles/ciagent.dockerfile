@@ -69,4 +69,5 @@ RUN echo "Installing NodeJS $NODEJS_VERSION" \
   && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" \
   && nvm install $NODEJS_VERSION
 
-COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
+COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/bin/trivy
+COPY --from=zricethezav/gitleaks:latest /usr/bin/gitleaks /usr/bin/gitleaks
