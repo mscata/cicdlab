@@ -114,33 +114,6 @@ jenkins:
     local:
       allowsSignup: false
       enableCaptcha: false
-      users:
-      - id: "admin"
-        name: "admin"
-        properties:
-        - "consoleUrlProvider"
-        - "apiToken"
-        - "favorite"
-        - "myView"
-        - preferredProvider:
-            providerId: "default"
-        - "timezone"
-        - "experimentalFlags"
-        - mailer:
-            emailAddress: "admin@cicdlabs.org"
-      - id: "developer"
-        name: "developer"
-        properties:
-        - "consoleUrlProvider"
-        - "apiToken"
-        - "favorite"
-        - "myView"
-        - preferredProvider:
-            providerId: "default"
-        - "timezone"
-        - "experimentalFlags"
-        - mailer:
-            emailAddress: "developer@cicdlabs.org"
   slaveAgentPort: 50000
   updateCenter:
     sites:
@@ -203,7 +176,7 @@ unclassified:
     - credentialsId: "GITEA_CREDENTIALS"
       displayName: "cicdlab-scmserver"
       manageHooks: true
-      serverUrl: "http://cicdlab-scmserver:3000"
+      serverUrl: "http://scmserver:3000"
   globalTimeOutConfiguration:
     operations:
     - "abortOperation"
@@ -219,7 +192,7 @@ unclassified:
     storage: "file"
   location:
     adminAddress: "address not configured yet <nobody@nowhere>"
-    url: "http://localhost:8080/jenkins/"
+    url: "http://ciserver:8080/jenkins/"
   mailer:
     charset: "UTF-8"
     useSsl: false

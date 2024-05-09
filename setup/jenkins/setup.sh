@@ -1,5 +1,19 @@
-jenkins-plugin-cli -f /var/jenkins_home/jenkins-plugins.txt -d /var/jenkins_home/plugins --verbose
-for f in $(ls /var/jenkins_home/plugins/*.hpi); do
-    plugin_name=$(basename "$f" .hpi)
-    unzip -o "$f" -d /var/jenkins_home/plugins/"$plugin_name"
+#!/bin/bash
+# wait for jenkins to accept requests
+echo "Start of Jenkins setup"
+retries=20
+for ((retry = 1; retry <= retries; retry++)); do
+  if curl -s -o /dev/null http://ciserver:8080/jenkins/job/cicdlabs/; then
+      break
+  else
+      if [[ retry -eq $retries ]]; then
+        echo "Failed to set up Nexus"
+        exit 1
+      else
+        echo "Waiting for Nexus... ($retry/$retries)"
+        sleep 60
+      fi
+  fi
 done
+curl -X POST --user admin:11b97984ddae80553014a4c5581f8ee404 http://ciserver:8080/jenkins/job/cicdlabs/build?delay=0
+echo "End of Jenkins setup"

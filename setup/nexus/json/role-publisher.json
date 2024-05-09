@@ -1,0 +1,11 @@
+{
+  "id": "nx-publisher",
+  "name": "nx-publisher",
+  "description": "Can publish artifacts to any repo",
+  "privileges": [
+    "nx-healthcheck-read",
+    "nx-healthcheck-summary-read",
+    "nx-repository-view-*-*-*"
+  ],
+  "roles": []
+}

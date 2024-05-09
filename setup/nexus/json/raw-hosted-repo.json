@@ -1,0 +1,12 @@
+{
+  "name": "raw-hosted",
+  "online": true,
+  "storage": {
+    "blobStoreName": "default",
+    "strictContentTypeValidation": true,
+    "writePolicy": "allow_once"
+  },
+  "component": {
+    "proprietaryComponents": true
+  }
+}

@@ -11,10 +11,12 @@ ARG NVM_VERSION=0.39.7
 
 ENV TOOLS_HOME=/home/jenkins/tools
 
+COPY --chown=jenkins:jenkins ../setup/jenkins /home/jenkins/setup
+
 USER root
 
 RUN apt-get update \
-  && apt-get install -y lsb-release apt-utils sudo zip unzip python3 python3-pip \
+  && apt-get install -y lsb-release apt-utils sudo zip unzip python3 python3-pip nano \
   && curl -fsSL https://get.docker.com | sh \
   && mkdir -p $TOOLS_HOME && chown jenkins:jenkins $TOOLS_HOME
 
@@ -29,7 +31,9 @@ RUN echo "Downloading Maven $MAVEN_VERSION" \
   && echo "Installing..." \
   && mv apache-maven-$MAVEN_VERSION $TOOLS_HOME/ \
   && echo "Cleaning up..." \
-  && rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz 
+  && rm -f apache-maven-$MAVEN_VERSION-bin.tar.gz \
+  && mkdir -p /home/jenkins/.m2 \
+  && cp /home/jenkins/setup/maven-settings.xml /home/jenkins/.m2/settings.xml
 
 RUN echo "Downloading Liquibase $LIQUIBASE_VERSION" \
   && curl -LO https://github.com/liquibase/liquibase/releases/download/v$LIQUIBASE_VERSION/liquibase-$LIQUIBASE_VERSION.tar.gz \

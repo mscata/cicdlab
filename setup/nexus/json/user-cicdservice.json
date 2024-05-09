@@ -1,0 +1,11 @@
+{
+  "userId": "cicdservice",
+  "firstName": "cicd",
+  "lastName": "service",
+  "emailAddress": "cicdservice@cicdlabs.org",
+  "password": "password",
+  "status": "active",
+  "roles": [
+    "nx-publisher"
+  ]
+}
