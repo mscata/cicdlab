@@ -16,7 +16,7 @@ COPY --chown=jenkins:jenkins ../setup/jenkins /home/jenkins/setup
 USER root
 
 RUN apt-get update \
-  && apt-get install -y lsb-release apt-utils sudo zip unzip python3 python3-pip nano \
+  && apt-get install -y lsb-release apt-utils sudo zip unzip python3 python3-pip \
   && curl -fsSL https://get.docker.com | sh \
   && mkdir -p $TOOLS_HOME && chown jenkins:jenkins $TOOLS_HOME
 
