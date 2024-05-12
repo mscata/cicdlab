@@ -3,9 +3,9 @@
     <localRepository>${user.home}/.m2/repository</localRepository>
     <servers>
         <server>
-            <id>internalrepo</id>
-            <username>cicdservice</username>
-            <password>password</password>
+            <id>cicdlab</id>
+            <username>${repo.user}</username>
+            <password>${repo.password}</password>
         </server>
     </servers>
 
@@ -19,13 +19,23 @@
 
     <profiles>
         <profile>
-            <id>internalrepo</id>
+            <id>cicdlab</id>
             <repositories>
                 <repository>
-                    <id>cicdlab</id>
-                    <url>http://artifactsrepo:8081/nexus/repository/maven-public/</url>
+                    <id>releases</id>
+                    <url>http://artifactsrepo:8081/nexus/repository/maven-releases/</url>
                     <releases>
                         <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>snapshots</id>
+                    <url>http://artifactsrepo:8081/nexus/repository/maven-snapshots/</url>
+                    <releases>
+                        <enabled>false</enabled>
                     </releases>
                     <snapshots>
                         <enabled>true</enabled>
@@ -34,10 +44,20 @@
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
-                    <id>cicdlab</id>
-                    <url>http://artifactsrepo:8081/nexus/repository/maven-public/</url>
+                    <id>releases</id>
+                    <url>http://artifactsrepo:8081/nexus/repository/maven-releases/</url>
                     <releases>
                         <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>snapshots</id>
+                    <url>http://artifactsrepo:8081/nexus/repository/maven-snapshots/</url>
+                    <releases>
+                        <enabled>false</enabled>
                     </releases>
                     <snapshots>
                         <enabled>true</enabled>
