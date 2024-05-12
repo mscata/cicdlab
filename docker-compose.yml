@@ -1,7 +1,7 @@
 networks:
   default:
     name: cicdlab
-    
+
 volumes:
   artifactsrepo_data: {}
   ciserver_data: {}
@@ -9,7 +9,7 @@ volumes:
   dbserver_data: {}
   projectadmin_data: {}
   scmserver_data: {}
-           
+
 #  proxy:
 #    image: nginx
 #    volumes:
@@ -99,7 +99,7 @@ services:
       SONAR_JDBC_PASSWORD: password
     ports:
       - "9000:9000"
-  
+
   dbadmin:
     depends_on:
       dbserver:
@@ -191,7 +191,7 @@ services:
       resources:
         limits:
           memory: 2gb
-          
+
   scmserver:
     depends_on:
       dbserver:
