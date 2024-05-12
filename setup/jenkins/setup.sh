@@ -3,7 +3,7 @@
 echo "Start of Jenkins setup"
 retries=20
 for ((retry = 1; retry <= retries; retry++)); do
-  if curl -s -o /dev/null http://ciserver:8080/jenkins/job/cicdlabs/; then
+  if curl -Ifs -o /dev/null http://ciserver:8080/jenkins/job/cicdlabs/; then
       break
   else
       if [[ retry -eq $retries ]]; then
