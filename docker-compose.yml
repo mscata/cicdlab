@@ -21,7 +21,6 @@ services:
   artifactsrepo:
     container_name: cicdlab-artifactsrepo
     hostname: artifactsrepo
-#    image: mscata/cicdlabs-artifactsrepo
     image: sonatype/nexus3:latest
     environment:
       - NEXUS_CONTEXT=nexus
@@ -34,16 +33,6 @@ services:
       retries: 20
       interval: 1m
       start_period: 2m
-    ### We can't just mount the override nexus properties file
-    ### We need to explicitly mkdir the data dir first, or the
-    ### container will fail to start due to lack of privileges
-#    command:
-#      - /bin/sh
-#      - -c
-#      - |
-#        echo "Setting up Nexus for the CI/CD lab..."
-#        time /setup/nexus/setup.sh
-#        /opt/sonatype/nexus/bin/nexus run
     ports:
       - 8081:8081
     deploy:
@@ -92,7 +81,7 @@ services:
           cpus: '0.75'
           memory: 2gb
     healthcheck:
-      test: ["CMD", "curl", "-I", "http://localhost:8080/jenkins/login", "|", "grep", "200"]
+      test: ["CMD", "curl", "-Ifs", "http://localhost:8080/jenkins/login"]
       retries: 10
       interval: 1m
       start_period: 2m
