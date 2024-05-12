@@ -12,10 +12,12 @@ The lab allows a group of participants to initiate one or more projects and esta
 - database and database administration: [Postgres](https://www.postgresql.org/) and [PG Admin](https://www.pgadmin.org/)
 - application monitoring and observability: [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/)
 
+All customised Docker images are [published to the Docker Hub](https://hub.docker.com/search?q=mscata%2Fcicdlabs).
+
 ## Pre-requisites
 
+The lab was developed on a laptop with a quad-core AMD Ryzen 5 and 16GB of RAM, and runs very happily in there.
 You will need [Docker](https://www.docker.io/) in order to run the lab, and at least 8GB FREE of RAM.
-The lab has been running happily on a laptop with a quad-core AMD Ryzen 5 and 16GB of RAM.
 If you want to deploy to Kubernetes, then you will also need [Minikube](https://minikube.sigs.k8s.io/docs/).
 
 ## Starting the Lab
@@ -37,11 +39,13 @@ time, all services will start up much faster, usually within 2 minutes.
 The artifacts repository takes the longest to start up. The first time it starts, it will automatically install
 and configure a lot of stuff. The first time you login to it, it will ask you to complete a couple of manual
 setup steps. Just make sure you enable anonymous access and that's it.
-I haven't found a way to easily turn this into a pre-built custom image, but if you do, then please let me know. 
+I haven't found a way to easily turn this into a pre-built fast-loading custom image. 
+If you do, then please let me know how you did it.
 
-The composer project contains a `setup` service. This performs some additional configuration operations on those
-services that couldn't be pre-built as custom images. The `setup` service runs fairly quickly and then it stops.
-It should not be running continuously and you don't need to try to start it up. Just let it be.
+The composer project contains a `labsetup` service. This performs some additional configuration operations on those
+services that couldn't be pre-built as custom images. The `labsetup` service runs fairly quickly and then it stops.
+It should not be running continuously, and you don't need to try starting it up again and again.
+It only needs to run once to finish setting things up. Just let it be.
 
 The CI server will use the following credentials to connect to other services. Please note that you will probably have to update the passwords
 **exactly as shown here** from the [Credentials management screen](http://localhost:8080/jenkins/manage/credentials/), otherwise it won't be able to connect to anything:
