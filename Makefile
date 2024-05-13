@@ -14,14 +14,17 @@ img_basename := mscata/cicdlabs
 clean:
 	@docker compose down
 
-.PHONY: freeze
-freeze:
+.PHONY: freezedbserver
+freezedbserver:
 	@docker exec cicdlab-dbserver bash -c "pg_dump -h localhost -U postgres -d postgres > /tmp/postgres-init.sql"
 	@docker cp cicdlab-dbserver:$(PATH_PREFIX)/tmp/postgres-init.sql setup/postgres/
-	@docker cp cicdlab-scmserver:$(PATH_PREFIX)/data/git/repositories setup/gitea/repositories
+
+.PHONY: freezeciserver
+freezeciserver:
+	@docker cp cicdlab-ciserver:$(PATH_PREFIX)/var/jenkins_home/credentials.xml setup/jenkins
 
 buildimg:
-	@docker build --no-cache . -f dockerfiles/$(IMAGE).dockerfile -t $(img_basename)-$(IMAGE):latest
+	@docker build . -f dockerfiles/$(IMAGE).dockerfile -t $(img_basename)-$(IMAGE):latest
 
 .PHONY: ciserver
 ciserver:

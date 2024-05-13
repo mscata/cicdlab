@@ -186,8 +186,10 @@ unclassified:
     checkForBuildAgentErrors: false
     enabled: false
     enforceUrl: false
+    gradleCaptureTaskInputFiles: true
     injectCcudExtension: false
     injectMavenExtension: false
+    mavenCaptureGoalInputFiles: true
   junitTestResultStorage:
     storage: "file"
   location:
@@ -213,6 +215,15 @@ unclassified:
     useExistingAccountWithSameEmail: false
   shell:
     shell: "/bin/bash"
+  sonarGlobalConfiguration:
+    buildWrapperEnabled: true
+    installations:
+    - credentialsId: "SONAR_CREDENTIALS"
+      name: "cicdlab-codescan"
+      serverUrl: "http://codescan:9000"
+      triggers:
+        skipScmCause: false
+        skipUpstreamCause: false
   subversionSCM:
     workspaceFormat: 8
   timestamper:

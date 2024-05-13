@@ -65,8 +65,10 @@ simple reason that it is very useful for lab users not to lose easily any of the
 predefined repositories in source control. You will have to create them as part of your lab exercises.
 
 The Jenkins user to access all other services is called `cicdservice` with password `password`. 
-The Jenkins token for the admin user is 11d877beb7a5a4e4ea09561047fd4706b0, which is used to perform additional setup
+The Jenkins token for the admin user is `11d877beb7a5a4e4ea09561047fd4706b0`, which is used to perform additional setup
 through the Jenkins API.
+The Sonar token for automated passwordless analysis is `squ_0dd6393e80a4bd4ab058ccb649625f34878ee6f3`. Jenkins will
+use this token to submit all code scans and retrieve the results.
 
 ### Databases
 
