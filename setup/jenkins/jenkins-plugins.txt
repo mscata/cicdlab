@@ -35,6 +35,7 @@ rebuild:latest
 redmine:latest
 sshd:latest
 ssh-slaves:latest
+sonar:latest
 timestamper:latest
 warnings-ng:latest
 workflow-aggregator:latest
