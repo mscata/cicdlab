@@ -16,7 +16,7 @@ COPY --chown=jenkins:jenkins ../setup/jenkins /home/jenkins/setup
 USER root
 
 RUN apt-get update \
-  && apt-get install -y lsb-release apt-utils sudo zip unzip python3 python3-pip \
+  && apt-get install -y lsb-release apt-utils sudo zip unzip python3 python3-pip python3-venv \
   && curl -fsSL https://get.docker.com | sh \
   && mkdir -p $TOOLS_HOME && chown jenkins:jenkins $TOOLS_HOME
 
@@ -75,7 +75,7 @@ RUN echo "Installing NodeJS $NODEJS_VERSION" \
 
 Run echo "Installing Snyk code scan" \
   && curl https://static.snyk.io/cli/latest/snyk-linux -o snyk \
-  && chmod +x ./snyk
+  && chmod +x ./snyk \
   && mv ./snyk $TOOLS_HOME/
 
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/bin/trivy
