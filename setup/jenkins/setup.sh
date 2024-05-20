@@ -15,5 +15,6 @@ for ((retry = 1; retry <= retries; retry++)); do
       fi
   fi
 done
-curl -X POST --user admin:11b97984ddae80553014a4c5581f8ee404 http://ciserver:8080/jenkins/job/cicdlabs/build?delay=0
+echo "Scanning cicdlab org..."
+curl -X POST -s --user admin:11b97984ddae80553014a4c5581f8ee404 http://ciserver:8080/jenkins/job/cicdlabs/build?delay=0
 echo "End of Jenkins setup"

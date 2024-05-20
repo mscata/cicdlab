@@ -67,8 +67,16 @@ predefined repositories in source control. You will have to create them as part 
 The Jenkins user to access all other services is called `cicdservice` with password `password`. 
 The Jenkins token for the `admin` user is `11d877beb7a5a4e4ea09561047fd4706b0`, which is used to perform additional setup
 through the Jenkins API.
-The Gitea token for the `cicdservice` user is `35400151bd4c17cd678ff3d303f5e6500abb55b3`. The setup service will use
-this token to push all sample repos.
+
+The Gitea token for the `cicdadmin` user is `234bf3a2b99bc52d9f0db2cbe90c0dbb4682a130`. The setup service will use
+this token to prepare and configure all the lab repos.
+
+The Gitea token for the `cicdservice` user is `35400151bd4c17cd678ff3d303f5e6500abb55b3`. This will be used by the
+CI agent to clone the repo before each build.
+
+The Gitea token for the `developer` user is `149b1f7fe81cdcbcef7782d78dfc5efd229ec033`. The setup service will use
+this token to push all sample code to the lab repos.
+
 The Sonar token for automated passwordless analysis is `squ_0dd6393e80a4bd4ab058ccb649625f34878ee6f3`. Jenkins will
 use this token to submit all code scans and retrieve the results. NOTE: the Sonar service is work-in-progress and is
 not currently deployed as part of the lab. Stay tuned.

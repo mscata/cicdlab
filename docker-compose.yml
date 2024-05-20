@@ -172,7 +172,8 @@ services:
       - /bin/sh
       - -c
       - |
-        apk add curl bash
+        echo "Installing packages..."
+        apk add curl bash git
         echo "Running setup scripts for the CI/CD lab..."
         /setup/nexus/setup.sh
         /setup/gitea/setup.sh
