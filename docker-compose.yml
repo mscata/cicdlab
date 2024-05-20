@@ -6,7 +6,7 @@ volumes:
   artifactsrepo_data: {}
   ciserver_data: {}
   dbadmin_data: {}
-  codescan_data: {}
+#  codescan_data: {}
   dbserver_data: {}
   projectadmin_data: {}
   scmserver_data: {}
@@ -87,27 +87,28 @@ services:
       interval: 1m
       start_period: 2m
 
-  codescan:
-    depends_on:
-      dbserver:
-        condition: service_healthy
-    container_name: cicdlab-codescan
-    hostname: codescan
-    image: sonarqube:lts-community
-    environment:
-      SONAR_JDBC_URL: jdbc:postgresql://dbserver:5432/postgres?currentSchema=sonar
-      SONAR_JDBC_USERNAME: postgres
-      SONAR_JDBC_PASSWORD: password
-      SONAR_WEB_CONTEXT: sonar
-    ports:
-      - "9000:9000"
-    volumes:
-      - codescan_data:/opt/sonarqube
-    deploy:
-      resources:
-        limits:
-          cpus: '0.75'
-          memory: 2gb
+#  codescan:
+#    depends_on:
+#      dbserver:
+#        condition: service_healthy
+#    container_name: cicdlab-codescan
+#    hostname: codescan
+#    image: sonarqube:lts-community
+#    environment:
+#      SONAR_JDBC_URL: jdbc:postgresql://dbserver:5432/postgres?currentSchema=sonar
+#      SONAR_JDBC_USERNAME: postgres
+#      SONAR_JDBC_PASSWORD: password
+#      SONAR_WEB_CONTEXT: /sonar
+#      SONAR_WEB_JAVAADDITIONALOPTS: -Djava.security.egd=file:/dev/./urandom
+#    ports:
+#      - "9000:9000"
+#    volumes:
+#      - codescan_data:/opt/sonarqube
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1.00'
+#          memory: 4gb
 
   dbadmin:
     depends_on:
