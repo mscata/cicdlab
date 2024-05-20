@@ -7,10 +7,10 @@ for ((retry = 1; retry <= retries; retry++)); do
       break
   else
       if [[ retry -eq $retries ]]; then
-        echo "Failed to set up Nexus"
+        echo "Failed to set up Jenkins"
         exit 1
       else
-        echo "Waiting for Nexus... ($retry/$retries)"
+        echo "Waiting for Jenkins... ($retry/$retries)"
         sleep 60
       fi
   fi

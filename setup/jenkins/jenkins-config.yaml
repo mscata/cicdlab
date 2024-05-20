@@ -220,7 +220,7 @@ unclassified:
     installations:
     - credentialsId: "SONAR_CREDENTIALS"
       name: "cicdlab-codescan"
-      serverUrl: "http://codescan:9000"
+      serverUrl: "http://codescan:9000/sonar"
       triggers:
         skipScmCause: false
         skipUpstreamCause: false
