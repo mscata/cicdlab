@@ -65,12 +65,14 @@ simple reason that it is very useful for lab users not to lose easily any of the
 predefined repositories in source control. You will have to create them as part of your lab exercises.
 
 The Jenkins user to access all other services is called `cicdservice` with password `password`. 
-The Jenkins token for the admin user is `11d877beb7a5a4e4ea09561047fd4706b0`, which is used to perform additional setup
+The Jenkins token for the `admin` user is `11d877beb7a5a4e4ea09561047fd4706b0`, which is used to perform additional setup
 through the Jenkins API.
 The Sonar token for automated passwordless analysis is `squ_0dd6393e80a4bd4ab058ccb649625f34878ee6f3`. Jenkins will
 use this token to submit all code scans and retrieve the results.
+The Gitea token for the `cicdservice` user is `35400151bd4c17cd678ff3d303f5e6500abb55b3`. The setup service will use
+this token to push all sample repos.
 
 ### Databases
 
-The lab creates a database called `cicdlabs` for all the runtime needs of the lab projects. Feel free to create schemas for all your lab's needs.
-The `Postgres` database is used for the lab's services, with a separate schema for each service.
+The `Postgres` database contains schemas for the lab's services, with a separate schema for each service.
+You can use the `public` schema for your lab sessions, or you can create a new database.

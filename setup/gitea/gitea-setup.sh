@@ -1,1 +1,0 @@
-curl -X 'POST' 'http://localhost:3000/api/v1/orgs' -H 'accept: application/json' -H 'authorization: Basic Y2ljZGFkbWluOnBhc3N3b3Jk' -H 'Content-Type: application/json' -d @/setup/gitea/gitea-create-org.json

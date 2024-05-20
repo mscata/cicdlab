@@ -174,6 +174,7 @@ services:
         apk add curl bash
         echo "Running setup scripts for the CI/CD lab..."
         /setup/nexus/setup.sh
+        /setup/gitea/setup.sh
         /setup/jenkins/setup.sh
         echo "End of setup."
         echo "This container will shut down now."
