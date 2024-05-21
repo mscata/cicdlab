@@ -1,22 +1,22 @@
 # CI/CD Lab
 
-This repo contains all the resources that are required to set up a generic CI/CD lab for educational purposes.
+This repo contains all the resources that are required to set up a simple CI/CD lab for educational purposes.
 
 The lab allows a group of participants to initiate one or more projects and establish a full SDLC around them, including:
 
 - project management: [Redmine](https://redmine.org)
 - source control management: [Gitea](https://github.com/go-gitea/gitea)
 - continuous integration facilities: [Jenkins](https://jenkins.io)
-- artifacts storage and management: [Artifactory](https://jfrog.com/artifactory/)
+- artifacts storage and management: [Nexus](https://www.sonatype.com/products/sonatype-nexus-repository)
 - deployment runtime: [Kubernetes](https://kubernetes.io/)
 - database and database administration: [Postgres](https://www.postgresql.org/) and [PG Admin](https://www.pgadmin.org/)
 - application monitoring and observability: [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/)
 
-All customised Docker images are [published to the Docker Hub](https://hub.docker.com/search?q=mscata%2Fcicdlabs).
+All customised Docker images are [published to the Docker Hub](https://hub.docker.com/search?q=mscata%2Fcicdlab).
 
 ## Pre-requisites
 
-The lab was developed on a laptop with a quad-core AMD Ryzen 5 and 16GB of RAM, and runs very happily in there.
+The lab was developed on a Windows laptop with a quad-core AMD Ryzen 5 and 16GB of RAM, and runs happily in there.
 You will need [Docker](https://www.docker.io/) in order to run the lab, and at least 8GB FREE of RAM.
 If you want to deploy to Kubernetes, then you will also need [Minikube](https://minikube.sigs.k8s.io/docs/).
 
@@ -34,31 +34,29 @@ Just run `docker compose up -d`. If you haven't changed the services' ports in `
 |Project Server      | http://localhost:3001/        | admin              | password |
 |SCM Server          | http://localhost:3000/        | cicdadmin          | password |
 
-It will take about 15-20 minutes to start all services from scratch for the first time, so be patient. After the first 
-time, all services will start up much faster, usually within 2 minutes.
+It will take about 20 minutes to start all services from scratch for the first time, so be patient. The first time
+you start everything, all images will have to be downloaded and that takes a good few minutes on the average
+home broadband connection. After that, all services will start up much faster, usually within 2 minutes.
+
 The artifacts repository takes the longest to start up. The first time it starts, it will automatically install
 and configure a lot of stuff. The first time you login to it, it will ask you to complete a couple of manual
-setup steps. Just make sure you enable anonymous access and that's it.
-I haven't found a way to easily turn this into a pre-built fast-loading custom image. 
-If you do, then please let me know how you did it.
+setup steps. Just make sure you enable anonymous access and that's it. I haven't found a way to easily turn this 
+into a pre-built fast-loading custom image. If you do, then please let me know how you did it.
 
-The composer project contains a `labsetup` service. This performs some additional configuration operations on those
+The lab also contains a `labsetup` service. This performs some additional configuration operations on some
 services that couldn't be pre-built as custom images. The `labsetup` service runs fairly quickly and then it stops.
 It should not be running continuously, and you don't need to try starting it up again and again.
 It only needs to run once to finish setting things up. Just let it be.
 
-The CI server will use the following credentials to connect to other services. Please note that you will probably have to update the passwords
-**exactly as shown here** from the [Credentials management screen](http://localhost:8080/jenkins/manage/credentials/), otherwise it won't be able to connect to anything:
+The CI server will use the following credentials to connect to other services. All of these are stored in the 
+[Credentials management screen](http://localhost:8080/jenkins/manage/credentials/):
 
-| Service              | Credentials ID    |Username             |Password  |
+| Target Service       | Credentials ID    |Username             |Password  |
 |----------------------|-------------------|---------------------|----------|
 | SCM Server           | GITEA_CREDENTIALS |cicdservice          |password  |
 | Artifacts Repository | NEXUS_CREDENTIALS |cicdservice          |password  |
 
-## Details for Lab users
-
-There is a predefined user called `developer` with password `password` for source control. You can use it to create new repositories and to push
-code to source control.
+There is a predefined user called `developer` with password `password` for source control. You can use it to create new repositories and to push code to source control.
 
 There really is no particular need to persist all data on the host filesystem, apart from the SCM server, for the
 simple reason that it is very useful for lab users not to lose easily any of the code they produce. Also, there are no 

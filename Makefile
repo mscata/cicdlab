@@ -8,7 +8,7 @@ default:
 	echo "You need to select one of the valid targets"
 
 date := `date '+%Y-%m-%d'`
-img_basename := mscata/cicdlabs
+img_basename := mscata/cicdlab
 
 .PHONY: clean
 clean:

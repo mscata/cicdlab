@@ -51,7 +51,7 @@ services:
         condition: service_healthy
     container_name: cicdlab-ciserver
     hostname: ciserver
-    image: mscata/cicdlabs-ciserver
+    image: mscata/cicdlab-ciserver
     environment:
       DOCKER_HOST: socat:2375
       CASC_JENKINS_CONFIG: /setup/jenkins/jenkins-config.yaml
@@ -116,7 +116,7 @@ services:
         condition: service_healthy
     container_name: cicdlab-dbadmin
     hostname: dbadmin
-    image: mscata/cicdlabs-dbadmin
+    image: mscata/cicdlab-dbadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@cicdlabs.org
       PGADMIN_DEFAULT_PASSWORD: password
@@ -137,7 +137,7 @@ services:
   dbserver:
     container_name: cicdlab-dbserver
     hostname: dbserver
-    image: mscata/cicdlabs-dbserver
+    image: mscata/cicdlab-dbserver
     environment:
       PGDATA: /var/lib/postgresql/data
       POSTGRES_USER: postgres
@@ -217,7 +217,7 @@ services:
         condition: service_healthy
     container_name: cicdlab-scmserver
     hostname: scmserver
-    image: mscata/cicdlabs-scmserver
+    image: mscata/cicdlab-scmserver
     environment:
       - USER_UID=1000
       - USER_GID=1000

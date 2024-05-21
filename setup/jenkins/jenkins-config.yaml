@@ -95,7 +95,7 @@ jenkins:
       launcher:
         command:
           command: "docker run -i --rm --name cicdlab-builder --network cicdlab -v\
-            \ //var/run/docker.sock://var/run/docker.sock --init mscata/cicdlabs-ciagent\
+            \ //var/run/docker.sock://var/run/docker.sock --init mscata/cicdlab-ciagent\
             \ java -jar /usr/share/jenkins/agent.jar"
       name: "builder"
       numExecutors: 5
@@ -141,7 +141,7 @@ security:
     port: -1
   scriptApproval:
     approvedScriptHashes:
-    - "SHA512:8dad6677a5a1a707746b1a0d3fd2cf65404b3043774bbff80c20d4ad95ae18be5cb42b18274c41de57dad7ce38ef1d35c7981a16d6ed284a07ff3d9ced7b6cb1"
+    - "SHA512:30033fb5526f46cf82a810160878e16083b50037c38c8475be04ce20e8a0a169a5092918f2f3f4e6f265960858bb05dc2989168d2283fe506ed8e0a2adbb283a"
 unclassified:
   bitbucketEndpointConfiguration:
     endpoints:
