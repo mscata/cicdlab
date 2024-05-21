@@ -3,7 +3,7 @@
 echo "Start of Jenkins setup"
 retries=20
 for ((retry = 1; retry <= retries; retry++)); do
-  if curl -Ifs -o /dev/null http://ciserver:8080/jenkins/job/cicdlabs/; then
+  if curl -Ifs -o /dev/null http://ciserver:8080/jenkins/job/cicdlab/; then
       break
   else
       if [[ retry -eq $retries ]]; then
@@ -16,5 +16,5 @@ for ((retry = 1; retry <= retries; retry++)); do
   fi
 done
 echo "Scanning cicdlab org..."
-curl -X POST -s --user admin:11b97984ddae80553014a4c5581f8ee404 http://ciserver:8080/jenkins/job/cicdlabs/build?delay=0
+curl -X POST -s --user admin:11b97984ddae80553014a4c5581f8ee404 http://ciserver:8080/jenkins/job/cicdlab/build?delay=0
 echo "End of Jenkins setup"
