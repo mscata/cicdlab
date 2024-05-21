@@ -21,4 +21,4 @@ RUN apt-get update \
 RUN usermod -aG docker jenkins
 
 USER jenkins
-COPY --from=dumper --chown=jenkins:jenkins /var/jenkins_home/ /var/jenkins_home/
+COPY --from=dumper --chown=jenkins:jenkins /var/jenkins_home /var/jenkins_home
