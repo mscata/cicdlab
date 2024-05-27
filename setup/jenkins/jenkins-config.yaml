@@ -76,7 +76,7 @@ jenkins:
   - name: "builder"
   - name: "built-in"
   markupFormatter: "plainText"
-  mode: NORMAL
+  mode: EXCLUSIVE
   myViewsTabBar: "standard"
   noUsageStatistics: true
   nodeMonitors:
@@ -94,9 +94,9 @@ jenkins:
   - permanent:
       launcher:
         command:
-          command: "docker run -i --rm --name cicdlab-builder --network cicdlab -v\
-            \ //var/run/docker.sock://var/run/docker.sock --init mscata/cicdlab-ciagent\
-            \ java -jar /usr/share/jenkins/agent.jar"
+          command: "docker run -i -e DOCKER_HOST='socat:2375' --rm --name cicdlab-builder\
+            \ --network cicdlab -v //var/run/docker.sock:/var/run/docker.sock --init\
+            \ mscata/cicdlab-ciagent java -jar /usr/share/jenkins/agent.jar"
       name: "builder"
       numExecutors: 5
       remoteFS: "/home/jenkins/agent"
@@ -141,7 +141,7 @@ security:
     port: -1
   scriptApproval:
     approvedScriptHashes:
-    - "SHA512:30033fb5526f46cf82a810160878e16083b50037c38c8475be04ce20e8a0a169a5092918f2f3f4e6f265960858bb05dc2989168d2283fe506ed8e0a2adbb283a"
+    - "SHA512:5e69a35b4e8f8787f617127bd1e5f3b45adc35eed1a010ba1a55a90e05db6e48877a255b58bc970dcce6adc78debe0e4dc6f3fa2741c229dd9b133dc2eca8f13"
 unclassified:
   bitbucketEndpointConfiguration:
     endpoints:
