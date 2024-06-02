@@ -5,9 +5,10 @@ FROM $JENKINS_IMG
 ARG MAVEN_VERSION=3.9.4
 ARG LIQUIBASE_VERSION=4.26.0
 ARG GRADLE_VERSION=8.3
-ARG DEPENDENCYCHECK_VERSION=8.4.0
+ARG DEPENDENCYCHECK_VERSION=9.2.0
 ARG NODEJS_VERSION=20
 ARG NVM_VERSION=0.39.7
+ARG NVD_API_KEY= # get one from https://nvd.nist.gov/developers/request-an-api-key
 
 ENV TOOLS_HOME=/home/jenkins/tools
 
@@ -16,7 +17,8 @@ COPY --chown=jenkins:jenkins ../setup/jenkins /home/jenkins/setup
 USER root
 
 RUN apt-get update \
-  && apt-get install -y lsb-release apt-utils sudo zip unzip python3 python3-pip python3-venv \
+  && apt-get install -y lsb-release apt-utils sudo zip unzip \
+  python3 python3-pip python3-venv python3-build twine \
   && curl -fsSL https://get.docker.com | sh \
   && mkdir -p $TOOLS_HOME && chown jenkins:jenkins $TOOLS_HOME
 
@@ -60,6 +62,8 @@ RUN echo "Downloading Dependency Check $DEPENDENCYCHECK_VERSION" \
   && unzip -q dependency-check-$DEPENDENCYCHECK_VERSION-release.zip \
   && echo "Installing..." \
   && mv dependency-check $TOOLS_HOME/ \
+  && echo "Updating vulnerabilities database..." \
+  && $TOOLS_HOME/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey $NVD_API_KEY \
   && echo "Cleaning up..." \
   && rm -f dependency-check-$DEPENDENCYCHECK_VERSION-release.zip
 
@@ -73,10 +77,12 @@ RUN echo "Installing NodeJS $NODEJS_VERSION" \
   && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" \
   && nvm install $NODEJS_VERSION
 
-Run echo "Installing Snyk code scan" \
+RUN echo "Installing Snyk code scan" \
   && curl https://static.snyk.io/cli/latest/snyk-linux -o snyk \
   && chmod +x ./snyk \
   && mv ./snyk $TOOLS_HOME/
 
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/bin/trivy
+RUN echo "Updating Trivy DB..." && trivy fs /tmp
+
 COPY --from=zricethezav/gitleaks:latest /usr/bin/gitleaks /usr/bin/gitleaks
