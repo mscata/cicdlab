@@ -26,6 +26,10 @@ RUN usermod -aG docker jenkins
 
 USER jenkins
 
+RUN echo "Setting up pip" \
+  && mkdir /home/jenkins/.pip \
+  && cp /home/jenkins/setup/pip.conf /home/jenkins/.pip
+
 RUN echo "Downloading Maven $MAVEN_VERSION" \
   && curl -LO https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
   && echo "Unpacking..." \
