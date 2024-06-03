@@ -12,6 +12,7 @@ discord-notifier:latest
 docker-compose-build-step:latest
 docker-plugin:latest
 docker-slaves:latest
+docker-workflow:latest
 fitnesse:latest
 git:latest
 gitea:latest

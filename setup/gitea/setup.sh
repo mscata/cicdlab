@@ -16,7 +16,7 @@ for ((retry = 1; retry <= retries; retry++)); do
     fi
   fi
 done
-for reponame in "cicdlab-check"; do
+for reponame in "cicdlab-check" "cicdlab-flask-runner"; do
   cd /tmp || exit 1
   echo "Checking repository: ${reponame}"
   response=$(curl -fsw '%{http_code}' http://scmserver:3000/cicdlab/cicdlab-check/src/branch/main/Jenkinsfile -o /dev/null)
