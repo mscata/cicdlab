@@ -8,7 +8,6 @@ ARG GRADLE_VERSION=8.3
 ARG DEPENDENCYCHECK_VERSION=9.2.0
 ARG NODEJS_VERSION=20
 ARG NVM_VERSION=0.39.7
-ARG NVD_API_KEY= # get one from https://nvd.nist.gov/developers/request-an-api-key
 
 ENV TOOLS_HOME=/home/jenkins/tools
 
@@ -60,14 +59,15 @@ RUN echo "Downloading Gradle $GRADLE_VERSION" \
   && echo "Cleaning up..." \
   && rm -f gradle-$GRADLE_VERSION-bin.zip 
   
-RUN echo "Downloading Dependency Check $DEPENDENCYCHECK_VERSION" \
+RUN --mount=type=secret,id=nvdApiKey,target=/home/jenkins/nvdApiKey,uid=1000 \
+  echo "Downloading Dependency Check $DEPENDENCYCHECK_VERSION" \
   && curl -LO https://github.com/jeremylong/DependencyCheck/releases/download/v$DEPENDENCYCHECK_VERSION/dependency-check-$DEPENDENCYCHECK_VERSION-release.zip \
   && echo "Unpacking..." \
   && unzip -q dependency-check-$DEPENDENCYCHECK_VERSION-release.zip \
   && echo "Installing..." \
   && mv dependency-check $TOOLS_HOME/ \
   && echo "Updating vulnerabilities database..." \
-  && $TOOLS_HOME/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey $NVD_API_KEY \
+  && $TOOLS_HOME/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey $(cat /home/jenkins/nvdApiKey) \
   && echo "Cleaning up..." \
   && rm -f dependency-check-$DEPENDENCYCHECK_VERSION-release.zip
 
@@ -87,6 +87,8 @@ RUN echo "Installing Snyk code scan" \
   && mv ./snyk $TOOLS_HOME/
 
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/bin/trivy
-RUN echo "Updating Trivy DB..." && trivy fs /tmp
+RUN echo "Updating Trivy DB..." \
+  && trivy fs --download-db-only \
+  && trivy image --download-db-only
 
 COPY --from=zricethezav/gitleaks:latest /usr/bin/gitleaks /usr/bin/gitleaks

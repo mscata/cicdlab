@@ -23,8 +23,11 @@ freezedbserver:
 freezeciserver:
 	@docker cp cicdlab-ciserver:$(PATH_PREFIX)/var/jenkins_home/credentials.xml setup/jenkins
 
+.PHONY: local
+local: ciserver ciagent dbserver
+
 buildimg:
-	@docker build . -f dockerfiles/$(IMAGE).dockerfile -t $(img_basename)-$(IMAGE):latest
+	@docker build . -f dockerfiles/$(IMAGE).dockerfile -t $(img_basename)-$(IMAGE):latest --secret id=nvdApiKey,src=NVD_API_KEY.txt
 
 .PHONY: ciserver
 ciserver:
