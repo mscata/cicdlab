@@ -34,6 +34,7 @@ pipeline-npm:latest
 pipeline-stage-view:latest
 rebuild:latest
 redmine:latest
+scmskip:latest
 sshd:latest
 ssh-slaves:latest
 sonar:latest

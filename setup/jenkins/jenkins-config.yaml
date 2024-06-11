@@ -101,7 +101,7 @@ jenkins:
       numExecutors: 5
       remoteFS: "/home/jenkins/agent"
       retentionStrategy: "always"
-  numExecutors: 0
+  numExecutors: 5
   primaryView:
     all:
       name: "all"
