@@ -14,6 +14,9 @@ img_basename := mscata/cicdlab
 clean:
 	@docker compose down
 
+.PHONY: freeze
+freeze: freezeciserver freezedbserver
+
 .PHONY: freezedbserver
 freezedbserver:
 	@docker exec cicdlab-dbserver bash -c "pg_dump -h localhost -U postgres -d postgres > /tmp/postgres-init.sql"
@@ -27,7 +30,7 @@ freezeciserver:
 local: ciserver ciagent dbserver
 
 buildimg:
-	@docker build . -f dockerfiles/$(IMAGE).dockerfile -t $(img_basename)-$(IMAGE):latest --secret id=nvdApiKey,src=NVD_API_KEY.txt
+	@docker build . -f dockerfiles/$(IMAGE).dockerfile -t $(img_basename)-$(IMAGE):latest --secret id=nvdApiKey,src=./NVD_API_KEY.txt
 
 .PHONY: ciserver
 ciserver:
@@ -40,6 +43,9 @@ ciagent:
 .PHONY: dbserver
 dbserver:
 	@make buildimg IMAGE=dbserver
+
+.PHONY: push
+push: pushciserver pushciagent pushdbserver
 
 pushimg:
 	@docker tag $(img_basename)-$(IMAGE):latest $(img_basename)-$(IMAGE):$(date)

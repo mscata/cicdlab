@@ -66,6 +66,7 @@ RUN --mount=type=secret,id=nvdApiKey,target=/home/jenkins/nvdApiKey,uid=1000 \
   && unzip -q dependency-check-$DEPENDENCYCHECK_VERSION-release.zip \
   && echo "Installing..." \
   && mv dependency-check $TOOLS_HOME/ \
+  && echo "NVD API KEY: $(cat /home/jenkins/nvdApiKey)" \
   && echo "Updating vulnerabilities database..." \
   && $TOOLS_HOME/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey $(cat /home/jenkins/nvdApiKey) \
   && echo "Cleaning up..." \
