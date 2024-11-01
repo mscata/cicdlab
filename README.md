@@ -26,19 +26,21 @@ If you want to deploy to Kubernetes, then you will also need [Minikube](https://
 Just run `docker compose up -d`. If you haven't changed the services' ports in `docker-compose.yml`, then the services
 will be running as follows:
 
-| Service           | Browser URL                   | Admin User         | Password |
-|-------------------|-------------------------------|--------------------|----------|
-| Artifacts Repo    | http://localhost:8081/        | admin              | password |
-| CI Server         | http://localhost:8080/jenkins | admin              | password |
-| Clean Code Server | http://localhost:9000/        | admin              | password |
-| Database          | use the DB Admin URL          | postgres           | password |
-| DB Admin          | http://localhost:5050/        | admin@cicdlabs.org | password |
-| Project Server    | http://localhost:3001/        | admin              | password |
-| SCM Server        | http://localhost:3000/        | cicdadmin          | password |
+| Service           | Browser URL                   | Admin User         |
+|-------------------|-------------------------------|--------------------|
+| Artifacts Repo    | http://localhost:8081/        | admin              |
+| CI Server         | http://localhost:8080/jenkins | admin              |
+| Clean Code Server | http://localhost:9000/        | admin              |
+| Database          | use the DB Admin URL          | postgres           |
+| DB Admin          | http://localhost:5050/        | admin@cicdlabs.org |
+| Project Server    | http://localhost:3001/        | admin              |
+| SCM Server        | http://localhost:3000/        | cicdadmin          |
+
+The password for every user on every service is just `password`.
 
 It will take about 20 minutes to start all services from scratch for the first time, so be patient. The first time
 you start everything, all images will have to be downloaded and that takes a good few minutes on the average
-home broadband connection. After that, all services will start up much faster, usually within 2 minutes.
+home broadband connection. After that, all services will usually start up in under 10 minutes from "cold".
 
 The artifacts repository takes the longest to start up. The first time it starts, it will automatically install
 and configure a lot of stuff. The first time you login to it, it will ask you to complete a couple of manual
@@ -86,7 +88,8 @@ not currently deployed as part of the lab. Stay tuned.
 ### Databases
 
 The `Postgres` database contains schemas for the lab's services, with a separate schema for each service.
-You can use the `public` schema for your lab sessions, or you can create a new database.
+You can use the `public` schema for your lab sessions, or you can create a new database, or (even better) you can
+just spawn your own DB container.
 
 ## Building Images Locally
 
@@ -97,12 +100,12 @@ You have to get an NVD API key [from the NIST site](https://nvd.nist.gov/develop
 store it in the file `NVD_API_KEY.txt`, otherwise you won't be able to build the CI Agent image.
 
 You can build all the custom images by invoking `make local` from the project root. If you want to build only one
-image, then just run `make <image name>` instead. Bear in mind that `ciagent` takes about 1h to build!
+image, then just run `make <image name>` instead. Bear in mind that `ciagent` can take about 1h to build!
 
 Approximate build times:
 
 | Image Name | Build time |
 |------------|------------|
 | ciserver   | 10 minutes |
-| ciagent    | 15 minutes |
+| ciagent    | 60 minutes |
 | dbserver   | 10 minutes |
