@@ -88,7 +88,9 @@ RUN echo "Installing Snyk code scan" \
 
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/bin/trivy
 RUN echo "Updating Trivy DB..." \
-  && trivy fs --download-db-only \
-  && trivy image --download-db-only
+  && i=0; while [ $i -le 3 ]; do \
+  trivy fs --download-db-only \
+  && trivy image --download-db-only \
+  && break; i=i+1; sleep 1; done
 
 COPY --from=zricethezav/gitleaks:latest /usr/bin/gitleaks /usr/bin/gitleaks
