@@ -115,6 +115,7 @@ jenkins:
       allowsSignup: false
       enableCaptcha: false
   slaveAgentPort: 50000
+  systemMessage: "Marco's virtual CI/CD Lab"
   updateCenter:
     sites:
     - id: "default"
@@ -127,6 +128,25 @@ globalCredentialsConfiguration:
   configuration:
     providerFilter: "none"
     typeFilter: "none"
+appearance:
+  customHeader:
+    enabled: true
+    header: "logo"
+    headerColor:
+      backgroundColor: "black"
+      color: "white"
+      hoverColor: "grey"
+    links:
+    - external: true
+      label: "on GitHub"
+      logo: "nologo"
+      url: "https://github.com/mscata/cicdlab"
+    logo:
+      symbol:
+        symbol: "symbol-jenkins"
+    logoText: "Jenkins"
+    thinHeader: false
+    title: "Marco's virtual CI/CD Lab"
 security:
   apiToken:
     creationOfLegacyTokenEnabled: false

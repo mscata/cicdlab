@@ -7,6 +7,7 @@ configuration-as-code:latest
 create-fingerprint:latest
 credentials-binding:latest
 cucumber-reports:latest
+customizable-header:latest
 dependency-check-jenkins-plugin:latest
 discord-notifier:latest
 docker-compose-build-step:latest
