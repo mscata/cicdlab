@@ -203,6 +203,8 @@ unclassified:
     localRepository: "default"
   pollSCM:
     pollingThreadCount: 10
+  sCMSkipBuildWrapper:
+    skipPattern: ".*\\[ci skip\\].*"
   scmGit:
     addGitTagAction: false
     allowSecondFetch: false
