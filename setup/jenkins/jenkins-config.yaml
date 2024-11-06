@@ -141,9 +141,7 @@ appearance:
       label: "on GitHub"
       logo: "nologo"
       url: "https://github.com/mscata/cicdlab"
-    logo:
-      symbol:
-        symbol: "symbol-jenkins"
+    logo: "default"
     logoText: "Jenkins"
     thinHeader: false
     title: "Marco's virtual CI/CD Lab"
