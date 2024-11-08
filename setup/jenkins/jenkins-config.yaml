@@ -275,7 +275,7 @@ tool:
       name: "Open JDK 17"
   maven:
     installations:
-    - home: "/home/jenkins/tools/apache-maven-3.9.4"
+    - home: "/home/jenkins/tools/apache-maven-3.9.9"
       name: "Maven"
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
