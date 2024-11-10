@@ -2,6 +2,7 @@
 # wait for jenkins to accept requests
 echo "Start of Jenkins setup"
 retries=20
+curl -X POST -s --user admin:11b97984ddae80553014a4c5581f8ee404 http://ciserver:8080/jenkins/createItem?name=cicdlab --data @/setup/jenkins/jobs/cicdlab/config.xml -H "Content-Type:text/xml"
 for ((retry = 1; retry <= retries; retry++)); do
   if curl -Ifs -o /dev/null http://ciserver:8080/jenkins/job/cicdlab/; then
       break

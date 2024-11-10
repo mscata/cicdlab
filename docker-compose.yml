@@ -3,13 +3,8 @@ networks:
     name: cicdlab
 
 volumes:
-  artifactsrepo_data: {}
   ciserver_data: {}
-  dbadmin_data: {}
-#  codescan_data: {}
   dbserver_data: {}
-  projectadmin_data: {}
-  scmserver_data: {}
 
 #  proxy:
 #    image: nginx
@@ -28,7 +23,7 @@ services:
       - NEXUS_SECURITY_INITIAL_PASSWORD=password
     volumes:
       - ./setup:/setup
-      - artifactsrepo_data:/nexus-data
+      - ${ARTIFACTSREPO_VOLUME:-./volume_data/artifactsrepo}:/nexus-data
     healthcheck:
       test: ["CMD", "curl", "http://localhost:8081/nexus/service/rest/v1/status"]
       retries: 20
@@ -61,10 +56,10 @@ services:
       - 8080:8080
       - 50000:50000
     volumes:
-      - ciserver_data:/var/jenkins_home
+      - ${CISERVER_VOLUME:-ciserver_data}:/var/jenkins_home
+      - ${CIJOBS_VOLUME:-./volume_data/cijobs}:/var/jenkins_home/jobs
       - //var/run/docker.sock:/var/run/docker.sock
       - ./setup:/setup
-#      - ./setup/jenkins/users:/var/jenkins_home/users
 ### Uncomment the following section to make sure the
 ### plugins are always updated automatically, at the
 ### expense of a few more minutes of startup time
@@ -127,7 +122,7 @@ services:
       - 5050:80
     volumes:
       - ./setup:/setup
-      - dbadmin_data:/var/lib/pgadmin
+      - ${DBADMIN_VOLUME:-./data/dbadmin}:/var/lib/pgadmin
     deploy:
       resources:
         limits:
@@ -145,7 +140,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - dbserver_data:/var/lib/postgresql/data
+      - ${DBSERVER_VOLUME:-dbserver_data}:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "psql", "-U", "postgres", "postgresql://postgres:password@cicdlab-dbserver:5432/postgres",
              "-c", "select * from information_schema.schemata"]
@@ -197,7 +192,7 @@ services:
 #      - REDMINE_DB_PASSWORD=password
 #      - REDMINE_LANG=en_GB
 #    volumes:
-#      - projectadmin_data:/usr/src/redmine
+#      - ${PROJECTADMIN_VOLUME:-./volume_data/projectadmin}:/usr/src/redmine
 #      - ./setup/redmine/database.yml:/usr/src/redmine/config/database.yml
 #    healthcheck:
 #      test: ["CMD", "curl", "http://localhost:3001"]
@@ -229,7 +224,7 @@ services:
       - GITEA__database__PASSWD=password
     volumes:
       - ./setup:/setup
-      - scmserver_data:/data
+      - ${SCMSERVER_VOLUME:-./volume_data/scmserver}:/data
       - ./setup/gitea/gitea-app.ini:/data/gitea/conf/app.ini
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
