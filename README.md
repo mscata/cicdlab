@@ -109,3 +109,11 @@ Approximate build times:
 | ciserver   | 10 minutes |
 | ciagent    | 60 minutes |
 | dbserver   | 10 minutes |
+
+# Troubleshooting
+
+I have seen Docker Desktop on Windows 10 and Windows 11 spiking to 100%
+disk usage when running this lab. The following actions can help to fix it:
+* Disable Kubernetes integration in Docker Dekstop
+* Increase memory limits and swap size in a `%userprofile%\.wslconfig` file. I've added the one I use to this project, but [you have to read the docs](https://learn.microsoft.com/en-us/windows/wsl/wsl-config#wslconfig).
+* Try [compacting the WSL distro's virtual drive](https://stackoverflow.com/questions/70946140/docker-desktop-wsl-ext4-vhdx-too-large).
